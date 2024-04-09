@@ -1,19 +1,64 @@
 import random
+import time
+FruitsAndVegetables = [   "Chili Pepper - Habanero",
+    "Chili Pepper - Serrano",
+    "Lemon",
+    "Lime",
+    "Kiwi",
+    "Pineapple",
+    "Mango",
+    "Peach",
+    "Nectarine",
+    "Apricot",
+    "Cherry",
+    "Plum",
+    "Grapefruit",
+    "Pomegranate",
+    "Avocado",
+    "Papaya",
+    "Guava",
+    "Durian",
+    "Lychee",
+    "Dragon Fruit",
+    "Passion Fruit",
+    "Tangerine",
+    "Clementine",
+    "Date",
+    "Fig"
+]
 
-score = 0
+class quizz():
 
-arr = ['apple', 'pear', 'orange', 'broccoli']
+    def __init__(self, score=0):
+        
+        #defining the variables
+        self.score = score
+
+    def FruitAndVegQuizz(self):
+     
+        for i in range(5): #if it were and actual test, it would be 20
+
+            RandomFruitOrVeg = FruitsAndVegetables[random.randint(0,24)]
+
+            print("what is", RandomFruitOrVeg) #it just asks "what is avocado" in future with UI, it would be image
+            answer = input("") #the user input
+            if answer == RandomFruitOrVeg:
+                self.score +=1
+                time.sleep(0.5)
+                i = i+1
+                #this process checks if the user input is right
+            else:
+                time.sleep(0.5)
+                print("you got", RandomFruitOrVeg, "wrong")
+                time.sleep(0.5)
+                i = i+1
+                #if the user gets something wrong
+        
+        print("you got", self.score, '/ 20')
 
 
 
-for question in range(20): #loops through 20 questions
-    rand = random.randint(0,3) #random number to be used in the array
-    rand_fv = arr[rand] #random fruit to be asked
-    print("What fruit is ", rand_fv)
-    answer = input("")
-    if answer == rand_fv: #checking if answer is correct
-        question = question +1 #going on to the next question, if answer is correct
-        score = score +1 #adding 1 to the score, because answer is right
-    else:
-        print('you got it wrong, your score is', score) #if the answer is wrong, it tells
-        question = question + 1 #going onto the next question nonetheless
+QuizzObject = quizz()
+
+QuizzObject.FruitAndVegQuizz()
+
