@@ -1,8 +1,7 @@
 import customtkinter
 from random import randint
 
-FruitsAndVegetables = [   "Chili Pepper - Habanero",
-    "Chili Pepper - Serrano",
+FruitsAndVegetables = [   
     "Lemon",
     "Lime",
     "Kiwi",
@@ -57,19 +56,19 @@ class QuizzPage():
         self.surveybutton4 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[randint(0,20)])
 
         #pady
-        negative_padding = -5
+        
 
         self.imageframe.pack(pady=10, padx=40, fill = 'both', expand = 'true')
         
-        self.surveybutton1.grid(column=1, row=4, padx=(3, 1), pady=0)
-        self.surveybutton2.grid(column=2, row=4, padx=(1, 3), pady=0)
-        self.surveybutton3.grid(column=1, row=5, padx=(3, 1), pady=0)
-        self.surveybutton4.grid(column=2, row=5, padx=(1, 3), pady=0)
+        self.surveybutton1.grid(column=5, row=9, padx=7, pady=0)
+        self.surveybutton2.grid(column=8, row=9, padx=7, pady=0)
+        self.surveybutton3.grid(column=5, row=10, padx=7, pady=0)
+        self.surveybutton4.grid(column=8, row=10, padx=7, pady=0)
 
-        for i in range(4):
-            self.imageframe.grid_columnconfigure(i, weight=1, minsize=20)  # reduced minsize for closer placement
-        for i in range(6):
-            self.imageframe.grid_rowconfigure(i, weight=1, minsize=20)
+        for i in range(11):
+            self.imageframe.grid_columnconfigure(i, weight=1, minsize=0)  # reduced minsize for closer placement
+        for i in range(12):
+            self.imageframe.grid_rowconfigure(i, weight=1, minsize=0)
 
 
     def run(self):
