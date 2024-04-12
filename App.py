@@ -36,18 +36,17 @@ class QuizzPage():
 
         #setting the base properties for the application
 
-        self.CumulatedNums = []
+       
         self.last_num_of_array = True
+        self.new_number_in_array = False
 
         self.RandomNum1 = randint(0,21) #these are the random numbers to be used, for the labels of buttons. Hoping to have an algoritim better than this
         self.RandomNum2 = randint(0,21)
         self.RandomNum3 = randint(0,21)
         self.RandomNum4 = randint(0,21)
 
-        self.CumulatedNums.append(self.RandomNum1) #appending the nums so they can be sorted
-        self.CumulatedNums.append(self.RandomNum2)
-        self.CumulatedNums.append(self.RandomNum3)
-        self.CumulatedNums.append(self.RandomNum4)
+        self.CumulatedNums = [self.RandomNum1, self.RandomNum2, self.RandomNum3, self.RandomNum4]
+        
 
         self.CumulatedNums.sort() #sorting
 
@@ -72,13 +71,13 @@ class QuizzPage():
         
         #survey buttons
 
-        self.surveybutton1 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.RandomNum1])
-        self.surveybutton2 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.RandomNum2])
-        self.surveybutton3 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.RandomNum3])
-        self.surveybutton4 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.RandomNum4])
+        self.surveybutton1 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.CumulatedNums[0]])
+        self.surveybutton2 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.CumulatedNums[1]])
+        self.surveybutton3 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.CumulatedNums[2]])
+        self.surveybutton4 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.CumulatedNums[3]])
 
 
-        self.label = customtkinter.CTkLabel(master=self.imageframe, text=FruitsAndVegetables[self.RandomNum1])
+        self.label = customtkinter.CTkLabel(master=self.imageframe, text=FruitsAndVegetables[self.CumulatedNums[randint(0,3)]])
 
         #pady
         
@@ -95,6 +94,7 @@ class QuizzPage():
             self.imageframe.grid_columnconfigure(i, weight=1) #i is 11, same for next 1
         for i in range(12):
             self.imageframe.grid_rowconfigure(i, weight=1)
+             
 
 
     def checkingiflastnumberinarray(self): #There was a list out of range issue, so i created this function.
@@ -108,12 +108,29 @@ class QuizzPage():
         for i in range(len(self.CumulatedNums) -1):
             if self.CumulatedNums[i] == self.CumulatedNums[i+1] and self.last_num_of_array == False: 
                 self.CumulatedNums.pop(i) #if repeated number is evident, it gets removed
+                FruitsAndVegetables.pop(i) #it also gets removed from the other array, so it cant be repeated.
                 i = i+1 #process is repeated.
                 print(self.CumulatedNums)
+                if len(self.CumulatedNums) <4: #checks if number is missing
+                    self.CumulatedNums.append(randint(0,20)) #a new number is made, so the removed one can be replaced
             else:
-                i = i+1
+                i = i+1 #contitues on if no number is repeated
+    
+    
         
+    def commandss(self):
         
+        if self.surveybutton1._text==self.label._text or self.surveybutton2._text==self.label._text or self.surveybutton3._text==self.label._text or self.surveybutton4._text==self.label._text:
+            self.correct = True
+        if self.correct == True:
+            self.CumulatedNums.remove(0)
+            self.CumulatedNums.remove(1)
+            self.CumulatedNums.remove(2)
+            self.CumulatedNums.remove(3)
+
+    def CorrectAnswer(self):
+
+        self.surveybutton1.bind(command=self.commandss())
     
     def run(self):
         self.app.mainloop()
@@ -122,7 +139,13 @@ class QuizzPage():
 
 quizzpage = QuizzPage() #creating the object of login page from the original blueprint
 
+
+
+
+
+
 quizzpage.MakingSureNoRepeatedLabelsForButtons()
+quizzpage.CorrectAnswer()
 
 quizzpage.run() #now it can run methods
 
