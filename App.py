@@ -39,6 +39,9 @@ class QuizzPage():
        
         self.last_num_of_array = True
         self.new_number_in_array = False
+        self.correct = False
+
+        
 
         self.RandomNum1 = randint(0,21) #these are the random numbers to be used, for the labels of buttons. Hoping to have an algoritim better than this
         self.RandomNum2 = randint(0,21)
@@ -46,6 +49,7 @@ class QuizzPage():
         self.RandomNum4 = randint(0,21)
 
         self.CumulatedNums = [self.RandomNum1, self.RandomNum2, self.RandomNum3, self.RandomNum4]
+
         
 
         self.CumulatedNums.sort() #sorting
@@ -71,7 +75,7 @@ class QuizzPage():
         
         #survey buttons
 
-        self.surveybutton1 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.CumulatedNums[0]])
+        self.surveybutton1 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.CumulatedNums[0]], command=lambda: self.commandss())
         self.surveybutton2 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.CumulatedNums[1]])
         self.surveybutton3 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.CumulatedNums[2]])
         self.surveybutton4 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.CumulatedNums[3]])
@@ -116,21 +120,17 @@ class QuizzPage():
             else:
                 i = i+1 #contitues on if no number is repeated
     
-    
         
     def commandss(self):
         
         if self.surveybutton1._text==self.label._text or self.surveybutton2._text==self.label._text or self.surveybutton3._text==self.label._text or self.surveybutton4._text==self.label._text:
             self.correct = True
-        if self.correct == True:
-            self.CumulatedNums.remove(0)
-            self.CumulatedNums.remove(1)
-            self.CumulatedNums.remove(2)
-            self.CumulatedNums.remove(3)
+            self.CumulatedNums.clear()
 
-    def CorrectAnswer(self):
-
-        self.surveybutton1.bind(command=self.commandss())
+            while len(self.CumulatedNums) == 0:
+                self.CumulatedNums.append(randint(0,21))
+                print(self.CumulatedNums)
+        
     
     def run(self):
         self.app.mainloop()
@@ -143,10 +143,8 @@ quizzpage = QuizzPage() #creating the object of login page from the original blu
 
 
 
-
+quizzpage.commandss()
 quizzpage.MakingSureNoRepeatedLabelsForButtons()
-quizzpage.CorrectAnswer()
-
 quizzpage.run() #now it can run methods
 
 
