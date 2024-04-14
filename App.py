@@ -34,87 +34,62 @@ FruitsAndVegetables = [
 class QuizzPage():
     def __init__(self):
 
-        #setting the base properties for the application
-
+       
+        #setting the variables:
        
         self.last_num_of_array = True
         self.new_number_in_array = False
         self.correct = False
-
-
         self.CumulatedNums = []
-
         self.CumulatedNums.append(sample(FruitsAndVegetables, 4))
 
+        #sorting cumulated nums
+
+        self.CumulatedNums.sort()
+
+        #setting the geometry, and app root
         
-
-        self.CumulatedNums.sort() #sorting
-
-        #setting the geometry, might change later
-        self.app = customtkinter.CTk() #.app just like gooeypie
+        self.app = customtkinter.CTk() 
         self.app.geometry('400x400')
 
+        #cool feature, in CTK, allows a colour theme
 
         customtkinter.set_appearance_mode('light')
         customtkinter.set_default_color_theme('green')
 
-    
+        #setting the frames for the app
 
         self.answerframe = customtkinter.CTkFrame(master=self.app) #making the frame belong to this specific application. Hence master=self.app
         self.imageframe = customtkinter.CTkFrame(master=self.app) #the same here
-        
-        #survey buttons
 
-        
+        #setting the multiple choice buttons
 
         self.surveybutton1 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[0][0], command=lambda: self.commandss())
         self.surveybutton2 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[0][1], command=lambda: self.commandss())
         self.surveybutton3 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[0][2], command=lambda: self.commandss())
         self.surveybutton4 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[0][3], command=lambda: self.commandss())
 
-        print(self.CumulatedNums)
-
-    
-
+        #temporary label that shows the answer
 
         self.label = customtkinter.CTkLabel(master=self.imageframe, text=self.CumulatedNums[0][randint(0,3)])
 
-        #pady
+        #placing the widjets into the frame, through the grid and pack system
 
         self.imageframe.pack(pady=10, padx=40, fill = 'both', expand = 'true')
-        
         self.surveybutton1.grid(column=5, row=9, padx=7, pady=0) #have a very loose idea on how padx and pady work, sort just input values randomly untill to looks gud!
         self.surveybutton2.grid(column=8, row=9, padx=7, pady=0)
         self.surveybutton3.grid(column=5, row=10, padx=7, pady=0)
         self.surveybutton4.grid(column=8, row=10, padx=7, pady=0)
         self.label.grid(column = 7, row = 5, columnspan=2)
 
+        #setting the grid, collumns and rows
+
         for i in range(11):
             self.imageframe.grid_columnconfigure(i, weight=1) #i is 11, same for next 1
         for i in range(12):
             self.imageframe.grid_rowconfigure(i, weight=1)   
 
-    def ensure_unique_numbers(self):
-        # Track the indexes that have been used
-        seen = set()
-        for i in range(len(self.CumulatedNums)):
-            while self.CumulatedNums[i] in seen:
-                self.CumulatedNums[i] = randint(0, 21)  # Generate new number if duplicate
-            seen.add(self.CumulatedNums[i])
-    
-    # Now update the buttons with the new unique numbers
-        self.surveybutton1.configure(text=FruitsAndVegetables[self.CumulatedNums[0][0]])
-        self.surveybutton2.configure(text=FruitsAndVegetables[self.CumulatedNums[0][1]])
-        self.surveybutton3.configure(text=FruitsAndVegetables[self.CumulatedNums[0][2]])
-        self.surveybutton4.configure(text=FruitsAndVegetables[self.CumulatedNums[0][3]])
-        
-
-
-    def checkingiflastnumberinarray(self): #There was a list out of range issue, so i created this function.
-        for i in range(len(self.CumulatedNums) -1): #its probably over engineered, but it check if the last num of the array and makes sure the arr doesnt go out of range
-            if i == 4 and self.CumulatedNums[i] > self.CumulatedNums[i-1] and self.last_num_of_array == True:
-                self.last_num_of_array = False #returning this, so the next for loop can run without any issues.
-    
+    #function that gives a new question once answer is made, through the multiple choice buttons
         
     def commandss(self):
         
@@ -133,27 +108,18 @@ class QuizzPage():
 
                     self.label.configure(text=self.CumulatedNums[0][randint(0,3)])
                               
-        
-
-        print(self.CumulatedNums)
-
+    #app.run, so when the file is executed the gui pops up
     
     def run(self):
         self.app.mainloop()
 
     
 
+#creating an object out of quizpage so methods can be run
 
-
-quizzpage = QuizzPage() #creating the object of login page from the original blueprint
-
-
-
-
-
+quizzpage = QuizzPage()
 quizzpage.commandss()
-quizzpage.checkingiflastnumberinarray()
-quizzpage.run() #now it can run methods
+quizzpage.run()
 
 
 
