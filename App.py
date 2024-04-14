@@ -28,6 +28,57 @@ FruitsAndVegetables = [
 ]
 
 class LoginPage():
+    def __init__(self):
+
+        #setting the variables
+
+        self.app = customtkinter.CTk()
+        self.app.geometry('400x400')
+
+        #setting the colour theme
+
+        customtkinter.set_appearance_mode('light')
+        customtkinter.set_default_color_theme('green')
+
+        #creating the main frame
+
+        self.frame = customtkinter.CTkFrame(master=self.app)
+        self.logintab = customtkinter.CTkTabview(master=self.app)
+
+        #textboxes
+
+        self.Label = customtkinter.CTkLabel(master=self.frame, text="HFM Learning Workspace", font=('inter', 20))
+        self.UsernameTextbox = customtkinter.CTkEntry(master=self.frame, placeholder_text='Username')
+        self.PasswordTextbox = customtkinter.CTkEntry(master=self.frame, placeholder_text='Password', show = "•") #hiding the inputs
+        
+
+        #login button
+
+        self.LoginButton = customtkinter.CTkButton(master=self.frame, text='login')
+
+        #setting the grid
+
+        for i in range(11):
+            self.frame.grid_columnconfigure(i, weight=1) #i is 11, same for next 1
+        for i in range(12):
+            self.frame.grid_rowconfigure(i, weight=1)   
+
+        #placing the widgets into the app
+
+        self.frame.pack(pady = 20, padx = 60, fill= 'both', expand = True)
+        self.UsernameTextbox.grid(row = 7, column = 6, pady = 1, padx = 10)
+        self.PasswordTextbox.grid(row = 8, column = 6, pady = 1, padx = 10)
+        self.LoginButton.grid(row = 9, column = 6, pady = 1, padx = 10)
+        self.Label.grid(row = 4, column = 6)
+       
+
+
+
+    def run(self):
+        self.app.mainloop()
+
+loginpage = LoginPage()
+loginpage.run()
     
 
 
