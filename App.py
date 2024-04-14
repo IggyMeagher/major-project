@@ -1,5 +1,5 @@
 import customtkinter
-from random import randint
+from random import randint, sample
 
 FruitsAndVegetables = [   
     "Lemon",
@@ -19,8 +19,8 @@ FruitsAndVegetables = [
     "Guava",
     "Durian",
     "Lychee",
-    "Dragon Fruit",
-    "Passion Fruit",
+    "Dragonfruit",
+    "Passionfruit",
     "Tangerine",
     "Clementine",
     "Date",
@@ -41,14 +41,10 @@ class QuizzPage():
         self.new_number_in_array = False
         self.correct = False
 
-        
 
-        self.RandomNum1 = randint(0,21) #these are the random numbers to be used, for the labels of buttons. Hoping to have an algoritim better than this
-        self.RandomNum2 = randint(0,21)
-        self.RandomNum3 = randint(0,21)
-        self.RandomNum4 = randint(0,21)
+        self.CumulatedNums = []
 
-        self.CumulatedNums = [self.RandomNum1, self.RandomNum2, self.RandomNum3, self.RandomNum4]
+        self.CumulatedNums.append(sample(FruitsAndVegetables, 4))
 
         
 
@@ -62,29 +58,28 @@ class QuizzPage():
         customtkinter.set_appearance_mode('light')
         customtkinter.set_default_color_theme('green')
 
-        #defining a grid
-
-        #grid cols
-
-
-        #defining the widgets for the application
+    
 
         self.answerframe = customtkinter.CTkFrame(master=self.app) #making the frame belong to this specific application. Hence master=self.app
         self.imageframe = customtkinter.CTkFrame(master=self.app) #the same here
-        self.testbutton = customtkinter.CTkButton(master=self.imageframe, text='avocado')
         
         #survey buttons
 
-        self.surveybutton1 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.CumulatedNums[0]], command=lambda: self.commandss())
-        self.surveybutton2 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.CumulatedNums[1]])
-        self.surveybutton3 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.CumulatedNums[2]])
-        self.surveybutton4 = customtkinter.CTkButton(master=self.imageframe, text=FruitsAndVegetables[self.CumulatedNums[3]])
+        
+
+        self.surveybutton1 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[0][0], command=lambda: self.commandss())
+        self.surveybutton2 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[0][1], command=lambda: self.commandss())
+        self.surveybutton3 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[0][2], command=lambda: self.commandss())
+        self.surveybutton4 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[0][3], command=lambda: self.commandss())
+
+        print(self.CumulatedNums)
+
+    
 
 
-        self.label = customtkinter.CTkLabel(master=self.imageframe, text=FruitsAndVegetables[self.CumulatedNums[randint(0,3)]])
+        self.label = customtkinter.CTkLabel(master=self.imageframe, text=self.CumulatedNums[0][randint(0,3)])
 
         #pady
-        
 
         self.imageframe.pack(pady=10, padx=40, fill = 'both', expand = 'true')
         
@@ -97,28 +92,28 @@ class QuizzPage():
         for i in range(11):
             self.imageframe.grid_columnconfigure(i, weight=1) #i is 11, same for next 1
         for i in range(12):
-            self.imageframe.grid_rowconfigure(i, weight=1)
-             
+            self.imageframe.grid_rowconfigure(i, weight=1)   
+
+    def ensure_unique_numbers(self):
+        # Track the indexes that have been used
+        seen = set()
+        for i in range(len(self.CumulatedNums)):
+            while self.CumulatedNums[i] in seen:
+                self.CumulatedNums[i] = randint(0, 21)  # Generate new number if duplicate
+            seen.add(self.CumulatedNums[i])
+    
+    # Now update the buttons with the new unique numbers
+        self.surveybutton1.configure(text=FruitsAndVegetables[self.CumulatedNums[0][0]])
+        self.surveybutton2.configure(text=FruitsAndVegetables[self.CumulatedNums[0][1]])
+        self.surveybutton3.configure(text=FruitsAndVegetables[self.CumulatedNums[0][2]])
+        self.surveybutton4.configure(text=FruitsAndVegetables[self.CumulatedNums[0][3]])
+        
 
 
     def checkingiflastnumberinarray(self): #There was a list out of range issue, so i created this function.
         for i in range(len(self.CumulatedNums) -1): #its probably over engineered, but it check if the last num of the array and makes sure the arr doesnt go out of range
             if i == 4 and self.CumulatedNums[i] > self.CumulatedNums[i-1] and self.last_num_of_array == True:
                 self.last_num_of_array = False #returning this, so the next for loop can run without any issues.
-                
-
-    def MakingSureNoRepeatedLabelsForButtons(self):  #checks if there are any repeated values, so they dont show up on the buttons
-
-        for i in range(len(self.CumulatedNums) -1):
-            if self.CumulatedNums[i] == self.CumulatedNums[i+1] and self.last_num_of_array == False: 
-                self.CumulatedNums.pop(i) #if repeated number is evident, it gets removed
-                FruitsAndVegetables.pop(i) #it also gets removed from the other array, so it cant be repeated.
-                i = i+1 #process is repeated.
-                print(self.CumulatedNums)
-                if len(self.CumulatedNums) <4: #checks if number is missing
-                    self.CumulatedNums.append(randint(0,20)) #a new number is made, so the removed one can be replaced
-            else:
-                i = i+1 #contitues on if no number is repeated
     
         
     def commandss(self):
@@ -128,12 +123,25 @@ class QuizzPage():
             self.CumulatedNums.clear()
 
             while len(self.CumulatedNums) == 0:
-                self.CumulatedNums.append(randint(0,21))
-                print(self.CumulatedNums)
+                while len(self.CumulatedNums) != 4:
+                    self.CumulatedNums.append(sample(FruitsAndVegetables, 4))
+                    
+                    self.surveybutton1.configure(text=self.CumulatedNums[0][0])
+                    self.surveybutton2.configure(text=self.CumulatedNums[0][1])
+                    self.surveybutton3.configure(text=self.CumulatedNums[0][2])
+                    self.surveybutton4.configure(text=self.CumulatedNums[0][3])
+
+                    self.label.configure(text=self.CumulatedNums[0][randint(0,3)])
+                              
         
+
+        print(self.CumulatedNums)
+
     
     def run(self):
         self.app.mainloop()
+
+    
 
 
 
@@ -144,7 +152,7 @@ quizzpage = QuizzPage() #creating the object of login page from the original blu
 
 
 quizzpage.commandss()
-quizzpage.MakingSureNoRepeatedLabelsForButtons()
+quizzpage.checkingiflastnumberinarray()
 quizzpage.run() #now it can run methods
 
 
