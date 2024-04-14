@@ -27,6 +27,9 @@ FruitsAndVegetables = [
     "Fig"
 ]
 
+class LoginPage():
+    
+
 
 
 
@@ -115,12 +118,10 @@ class QuizzPage():
 
     
 
-#creating an object out of quizpage so methods can be run
+#creating an object out of quizpage so methods can be called
 
 quizzpage = QuizzPage()
 quizzpage.commandss()
-quizzpage.run()
-
 
 
         
