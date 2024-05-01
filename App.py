@@ -1,31 +1,9 @@
 import customtkinter
 from random import randint, sample
 
-FruitsAndVegetables = [   
-    "Lemon",
-    "Lime",
-    "Kiwi",
-    "Pineapple",
-    "Mango",
-    "Peach",
-    "Nectarine",
-    "Apricot",
-    "Cherry",
-    "Plum",
-    "Grapefruit",
-    "Pomegranate",
-    "Avocado",
-    "Papaya",
-    "Guava",
-    "Durian",
-    "Lychee",
-    "Dragonfruit",
-    "Passionfruit",
-    "Tangerine",
-    "Clementine",
-    "Date",
-    "Fig"
-]
+with open('FruitsAndVegetables.txt', 'r') as file:
+    FruitsAndVegetables = file.readlines()
+
 
 class LoginPage():
     def __init__(self):
@@ -42,14 +20,17 @@ class LoginPage():
 
         #creating the main frame
 
-        self.frame = customtkinter.CTkFrame(master=self.app)
-        self.logintab = customtkinter.CTkTabview(master=self.app)
+        self.frame = customtkinter.CTkFrame(self.app)
+
 
         #textboxes
 
-        self.Label = customtkinter.CTkLabel(master=self.frame, text="HFM Learning Workspace", font=('inter', 20))
+        self.Label = customtkinter.CTkLabel(master=self.frame, text="HFM Learning", font=('inter', 20))
         self.UsernameTextbox = customtkinter.CTkEntry(master=self.frame, placeholder_text='Username')
         self.PasswordTextbox = customtkinter.CTkEntry(master=self.frame, placeholder_text='Password', show = "•") #hiding the inputs
+        self.SignUpLabel = customtkinter.CTkLabel(master=self.frame, text='Dont have an account? Sign up here!', font=('inter', 10), text_color='green')
+        self.SignUpLabelButton = customtkinter.CTkButton(master=self.frame, text='')
+
         
 
         #login button
@@ -69,18 +50,29 @@ class LoginPage():
         self.UsernameTextbox.grid(row = 7, column = 6, pady = 1, padx = 10)
         self.PasswordTextbox.grid(row = 8, column = 6, pady = 1, padx = 10)
         self.LoginButton.grid(row = 9, column = 6, pady = 1, padx = 10)
+        self.SignUpLabel.grid(row = 10, column = 6, padx = 10, pady = 1)
         self.Label.grid(row = 4, column = 6)
-       
-
-
+        
 
     def run(self):
         self.app.mainloop()
 
-loginpage = LoginPage()
-loginpage.run()
     
 
+class RegisterPage():
+    def __init__(self) -> None:
+        
+        #setting the variables
+
+        self.app = customtkinter.CTk()
+        self.app.geometry('400x400')
+
+        #setting the colour theme
+
+        customtkinter.set_appearance_mode('light')
+        customtkinter.set_default_color_theme('green')
+
+        
 
 
 
@@ -91,11 +83,12 @@ class QuizzPage():
        
         #setting the variables:
        
+        self.randomnum = randint(0,5)
         self.last_num_of_array = True
         self.new_number_in_array = False
         self.correct = False
         self.CumulatedNums = []
-        self.CumulatedNums.append(sample(FruitsAndVegetables, 4))
+        self.CumulatedNums.append(sample(FruitsAndVegetables[self.randomnum], 4))
 
         #sorting cumulated nums
 
@@ -174,5 +167,6 @@ class QuizzPage():
 quizzpage = QuizzPage()
 quizzpage.commandss()
 
+quizzpage.run()
 
         
