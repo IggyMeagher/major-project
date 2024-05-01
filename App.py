@@ -1,5 +1,6 @@
 import customtkinter
 from random import randint, sample
+from PIL import Image
 
 with open('FruitsAndVegetables.txt', 'r') as file:
     FruitsAndVegetables = file.readlines()
@@ -59,23 +60,6 @@ class LoginPage():
 
     
 
-class RegisterPage():
-    def __init__(self) -> None:
-        
-        #setting the variables
-
-        self.app = customtkinter.CTk()
-        self.app.geometry('400x400')
-
-        #setting the colour theme
-
-        customtkinter.set_appearance_mode('light')
-        customtkinter.set_default_color_theme('green')
-
-        
-
-
-
 
 class QuizzPage():
     def __init__(self):
@@ -119,6 +103,11 @@ class QuizzPage():
         #temporary label that shows the answer
 
         self.label = customtkinter.CTkLabel(master=self.imageframe, text=self.CumulatedNums[0][randint(0,3)])
+        self.RefImage = customtkinter.CTkImage(light_image=Image.open('images/broccoli.png'), size=(150,150))
+        self.ImageLabel = customtkinter.CTkLabel(master=self.imageframe, text='', image=self.RefImage)
+
+        #adding an image placeholder
+
 
         #placing the widjets into the frame, through the grid and pack system
 
@@ -128,6 +117,7 @@ class QuizzPage():
         self.surveybutton3.grid(column=5, row=10, padx=7, pady=0)
         self.surveybutton4.grid(column=8, row=10, padx=7, pady=0)
         self.label.grid(column = 7, row = 5, columnspan=2)
+        self.ImageLabel.grid(column=5, row=5)
 
         #setting the grid, collumns and rows
 
