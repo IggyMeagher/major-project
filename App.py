@@ -2,8 +2,9 @@ import customtkinter
 from random import randint, sample
 from PIL import Image
 
+
 with open('FruitsAndVegetables.txt', 'r') as file:
-    FruitsAndVegetables = file.readlines()
+    FruitsAndVegetables = [line.strip() for line in file.readlines()]  # Using strip() to remove newline characters
 
 
 class LoginPage():
@@ -71,8 +72,8 @@ class QuizzPage():
         self.last_num_of_array = True
         self.new_number_in_array = False
         self.correct = False
-        self.CumulatedNums = []
-        self.CumulatedNums.append(sample(FruitsAndVegetables[self.randomnum], 4))
+        self.CumulatedNums = sample(FruitsAndVegetables, 4)
+        self.score = 0 
 
         #sorting cumulated nums
 
@@ -95,14 +96,14 @@ class QuizzPage():
 
         #setting the multiple choice buttons
 
-        self.surveybutton1 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[0][0], command=lambda: self.commandss())
-        self.surveybutton2 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[0][1], command=lambda: self.commandss())
-        self.surveybutton3 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[0][2], command=lambda: self.commandss())
-        self.surveybutton4 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[0][3], command=lambda: self.commandss())
+        self.surveybutton1 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[0], command=lambda: self.commandss())
+        self.surveybutton2 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[1], command=lambda: self.commandss())
+        self.surveybutton3 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[2], command=lambda: self.commandss())
+        self.surveybutton4 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[3], command=lambda: self.commandss())
 
         #temporary label that shows the answer
 
-        self.label = customtkinter.CTkLabel(master=self.imageframe, text=self.CumulatedNums[0][randint(0,3)])
+        self.label = customtkinter.CTkLabel(master=self.imageframe, text=self.CumulatedNums[randint(0,3)])
         self.RefImage = customtkinter.CTkImage(light_image=Image.open('images/broccoli.png'), size=(150,150))
         self.ImageLabel = customtkinter.CTkLabel(master=self.imageframe, text='', image=self.RefImage)
 
@@ -133,17 +134,21 @@ class QuizzPage():
         if self.surveybutton1._text==self.label._text or self.surveybutton2._text==self.label._text or self.surveybutton3._text==self.label._text or self.surveybutton4._text==self.label._text:
             self.correct = True
             self.CumulatedNums.clear()
+            self.score = self.score +1
+            print(self.score)
 
             while len(self.CumulatedNums) == 0:
                 while len(self.CumulatedNums) != 4:
-                    self.CumulatedNums.append(sample(FruitsAndVegetables, 4))
+                    self.CumulatedNums = sample(FruitsAndVegetables, 4)
                     
-                    self.surveybutton1.configure(text=self.CumulatedNums[0][0])
-                    self.surveybutton2.configure(text=self.CumulatedNums[0][1])
-                    self.surveybutton3.configure(text=self.CumulatedNums[0][2])
-                    self.surveybutton4.configure(text=self.CumulatedNums[0][3])
+                    self.surveybutton1.configure(text=self.CumulatedNums[0])
+                    self.surveybutton2.configure(text=self.CumulatedNums[1])
+                    self.surveybutton3.configure(text=self.CumulatedNums[2])
+                    self.surveybutton4.configure(text=self.CumulatedNums[3])
 
-                    self.label.configure(text=self.CumulatedNums[0][randint(0,3)])
+                    self.label.configure(text=self.CumulatedNums[randint(0,3)])
+                    print(self.CumulatedNums)
+        
                               
     #app.run, so when the file is executed the gui pops up
     
