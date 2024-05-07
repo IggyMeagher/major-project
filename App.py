@@ -1,7 +1,7 @@
 import customtkinter
 from random import randint, sample
 from PIL import Image
-
+import os
 
 with open('FruitsAndVegetables.txt', 'r') as file:
     FruitsAndVegetables = [line.strip() for line in file.readlines()]  # Using strip() to remove newline characters
@@ -33,10 +33,6 @@ class LoginPage():
         self.SignUpLabel = customtkinter.CTkLabel(master=self.frame, text='Dont have an account? Sign up here!', font=('inter', 10), text_color='green')
         self.SignUpLabelButton = customtkinter.CTkButton(master=self.frame, text='')
 
-        
-
-
-        
 
         #login button
 
@@ -68,9 +64,6 @@ class LoginPage():
     def run(self):
         self.app.mainloop()
 
-login_page = LoginPage()
-
-login_page.run()
 
 class RegisterPage():
     def __init__(self):
@@ -89,6 +82,54 @@ class RegisterPage():
         #creating the main frame
 
         self.frame = customtkinter.CTkFrame(self.app)
+
+        #setting widjets
+
+        self.TitleLabel = customtkinter.CTkLabel(master=self.frame, text='HFM Learning Registration', font=('inter', 20))
+        self.NameTextbox = customtkinter.CTkEntry(master=self.frame, placeholder_text="Enter full name")
+        self.PasswordTextBox = customtkinter.CTkEntry(master=self.frame, placeholder_text='Enter password', show='•')
+        self.ConfirmPasswordTextBox = customtkinter.CTkEntry(master=self.frame, placeholder_text='Confirm Password', show='•')
+        self.NoticeLabel = customtkinter.CTkLabel(master=self.frame, text='All data is used for the betterment of the app', font=('inter', 8))
+        self.Progressbar = customtkinter.CTkProgressBar(master=self.frame)
+        self.RegisterButton = customtkinter.CTkButton(master=self.frame, text='Register', command= lambda: self.RetrieveUserData()) #lambda is needed in order to delay the exectution untill a button press
+
+
+        #setting the grid
+
+        for i in range(11):
+            self.frame.grid_columnconfigure(i, weight=1) #i is 11, same for next 1
+        for i in range(12):
+            self.frame.grid_rowconfigure(i, weight=1)  
+        
+        #adding the widgets, and packing the frame
+
+        self.frame.pack(pady = 20, padx = 60, fill= 'both', expand = True)
+        self.TitleLabel.grid(row = 3, column = 6)
+        self.NameTextbox.grid(row = 5, column = 6)
+        self.PasswordTextBox.grid(row = 6, column = 6)
+        self.ConfirmPasswordTextBox.grid(row = 7, column = 6)
+        self.RegisterButton.grid(row = 8, column = 6)
+        self.Progressbar.grid(row = 9, column = 6)
+    
+    def RetrieveUserData(self):  
+
+            if self.PasswordTextBox.get() != self.ConfirmPasswordTextBox.get():
+                print("passwords need to match")
+            else:    
+                directory = 'user_data'
+                with open(os.path.join(directory, f"{self.NameTextbox.get()}.txt"), 'w') as file: #'w' means write
+                    file.write(f'Fullname: {self.NameTextbox.get()} \n') #When writing to a file the DLL os doesn't allow for commas, in how i would usually do it. So I am using fstrings
+                    file.write(f'Password: {self.PasswordTextBox.get()} \n')
+
+
+    def run(self):
+        self.app.mainloop()
+
+
+register_page = RegisterPage()
+register_page.run()
+
+
         
     
 
