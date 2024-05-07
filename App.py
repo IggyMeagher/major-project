@@ -35,6 +35,9 @@ class LoginPage():
 
         
 
+
+        
+
         #login button
 
         self.LoginButton = customtkinter.CTkButton(master=self.frame, text='login')
@@ -54,11 +57,39 @@ class LoginPage():
         self.LoginButton.grid(row = 9, column = 6, pady = 1, padx = 10)
         self.SignUpLabel.grid(row = 10, column = 6, padx = 10, pady = 1)
         self.Label.grid(row = 4, column = 6)
+
+        self.SignUpLabelButton.bind("<Button-1>", self.label_clicked()) 
+
+    def label_clicked(self):
+        print("hello world")
+
         
 
     def run(self):
         self.app.mainloop()
 
+login_page = LoginPage()
+
+login_page.run()
+
+class RegisterPage():
+    def __init__(self):
+
+
+        #setting the variables
+
+        self.app = customtkinter.CTk()
+        self.app.geometry('400x400')
+
+        #setting the colour theme
+
+        customtkinter.set_appearance_mode('light')
+        customtkinter.set_default_color_theme('green')
+
+        #creating the main frame
+
+        self.frame = customtkinter.CTkFrame(self.app)
+        
     
 
 
@@ -68,10 +99,6 @@ class QuizzPage():
        
         #setting the variables:
        
-        self.randomnum = randint(0,5)
-        self.last_num_of_array = True
-        self.new_number_in_array = False
-        self.correct = False
         self.CumulatedNums = sample(FruitsAndVegetables, 4)
         self.score = 0 
 
@@ -96,10 +123,11 @@ class QuizzPage():
 
         #setting the multiple choice buttons
 
-        self.surveybutton1 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[0], command=lambda: self.commandss())
-        self.surveybutton2 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[1], command=lambda: self.commandss())
-        self.surveybutton3 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[2], command=lambda: self.commandss())
-        self.surveybutton4 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[3], command=lambda: self.commandss())
+        # Correctly setting the command for each button to pass itself to the ListeningIfCorrect method
+        self.surveybutton1 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[0], command=lambda: self.ListeningIfCorrect(self.surveybutton1))
+        self.surveybutton2 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[1], command=lambda: self.ListeningIfCorrect(self.surveybutton2))
+        self.surveybutton3 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[2], command=lambda: self.ListeningIfCorrect(self.surveybutton3))
+        self.surveybutton4 = customtkinter.CTkButton(master=self.imageframe, text=self.CumulatedNums[3], command=lambda: self.ListeningIfCorrect(self.surveybutton4))
 
         #temporary label that shows the answer
 
@@ -127,27 +155,28 @@ class QuizzPage():
         for i in range(12):
             self.imageframe.grid_rowconfigure(i, weight=1)   
 
+        
+
     #function that gives a new question once answer is made, through the multiple choice buttons
-        
-    def commandss(self):
-        
-        if self.surveybutton1._text==self.label._text or self.surveybutton2._text==self.label._text or self.surveybutton3._text==self.label._text or self.surveybutton4._text==self.label._text:
-            self.correct = True
-            self.CumulatedNums.clear()
-            self.score = self.score +1
-            print(self.score)
 
-            while len(self.CumulatedNums) == 0:
-                while len(self.CumulatedNums) != 4:
-                    self.CumulatedNums = sample(FruitsAndVegetables, 4)
-                    
-                    self.surveybutton1.configure(text=self.CumulatedNums[0])
-                    self.surveybutton2.configure(text=self.CumulatedNums[1])
-                    self.surveybutton3.configure(text=self.CumulatedNums[2])
-                    self.surveybutton4.configure(text=self.CumulatedNums[3])
+    def ListeningIfCorrect(self, clicked_button):
+        
+        self.correct = False #orgininally starts off as false
 
-                    self.label.configure(text=self.CumulatedNums[randint(0,3)])
-                    print(self.CumulatedNums)
+        if clicked_button._text == self.label._text: #checking if the answer is right, a bit buggy for some reason it doesnt detect the paramater
+            self.correct = True #if the correct label is correct
+            self.score = self.score +1 #changes the score accordingly
+            self.update_questions() #gives the user new questions
+        else:
+            clicked_button.configure(text='✖') #informs the user if the answer is wrong, and makes them continue untill it is correct
+
+    def update_questions(self):
+        self.CumulatedNums = sample(FruitsAndVegetables, 4) #generating new questions
+        self.label.configure(text=self.CumulatedNums[randint(0,3)]) #generating new answer
+        self.surveybutton1.configure(text=self.CumulatedNums[0])
+        self.surveybutton2.configure(text=self.CumulatedNums[1])
+        self.surveybutton3.configure(text=self.CumulatedNums[2])
+        self.surveybutton4.configure(text=self.CumulatedNums[3])   
         
                               
     #app.run, so when the file is executed the gui pops up
@@ -159,9 +188,7 @@ class QuizzPage():
 
 #creating an object out of quizpage so methods can be called
 
-quizzpage = QuizzPage()
-quizzpage.commandss()
-
-quizzpage.run()
-
-        
+# if __name__ == "__main__":
+#     app = QuizzPage()
+#     app.run()
+#     app.ListeningIfCorrect()
