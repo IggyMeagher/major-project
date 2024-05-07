@@ -2,6 +2,7 @@ import customtkinter
 from random import randint, sample
 from PIL import Image
 import os
+import re
 
 with open('FruitsAndVegetables.txt', 'r') as file:
     FruitsAndVegetables = [line.strip() for line in file.readlines()]  # Using strip() to remove newline characters
@@ -83,16 +84,22 @@ class RegisterPage():
 
         self.frame = customtkinter.CTkFrame(self.app)
 
+        # Using StringVar for password fields
+        self.password_var = customtkinter.StringVar()
+        self.confirm_password_var = customtkinter.StringVar()
+
         #setting widjets
 
         self.TitleLabel = customtkinter.CTkLabel(master=self.frame, text='HFM Learning Registration', font=('inter', 20))
         self.NameTextbox = customtkinter.CTkEntry(master=self.frame, placeholder_text="Enter full name")
         self.PasswordTextBox = customtkinter.CTkEntry(master=self.frame, placeholder_text='Enter password', show='•')
         self.ConfirmPasswordTextBox = customtkinter.CTkEntry(master=self.frame, placeholder_text='Confirm Password', show='•')
-        self.NoticeLabel = customtkinter.CTkLabel(master=self.frame, text='All data is used for the betterment of the app', font=('inter', 8))
+        self.NoticeLabel = customtkinter.CTkLabel(master=self.frame, text='', font=('inter', 12))
         self.Progressbar = customtkinter.CTkProgressBar(master=self.frame)
         self.RegisterButton = customtkinter.CTkButton(master=self.frame, text='Register', command= lambda: self.RetrieveUserData()) #lambda is needed in order to delay the exectution untill a button press
 
+        self.Progressbar.set(0)
+        
 
         #setting the grid
 
@@ -110,6 +117,37 @@ class RegisterPage():
         self.ConfirmPasswordTextBox.grid(row = 7, column = 6)
         self.RegisterButton.grid(row = 8, column = 6)
         self.Progressbar.grid(row = 9, column = 6)
+        self.NoticeLabel.grid(row = 10, column = 6)
+
+        self.PasswordTextBox.bind("<KeyRelease>", self.PasswordStrengthChecker)
+
+
+    def PasswordStrengthChecker(self, event=None):
+        password = self.PasswordTextBox.get()
+        strength = 0
+        if re.search(r'[A-Z]', password):
+            strength += 1
+        if re.search(r'[a-z]', password):
+            strength += 1
+        if re.search(r'[0-9]', password):
+            strength += 1
+        if re.search(r'[\W_]', password):
+            strength += 1
+        if len(password) >= 8:
+            strength += 1
+
+        if strength <=1:
+            self.NoticeLabel.configure(text="Password Strength low")
+        elif strength <4:
+            self.NoticeLabel.configure(text="Password Strength Moderate")
+        elif strength >=4:
+            self.NoticeLabel.configure(text="Password Stregnth Excellent")
+
+        # Update the progress bar based on the strength calculated
+        self.Progressbar.set(strength / 5.0)  # Assuming the progress bar's range is 0.0 to 1.0
+
+       
+            
     
     def RetrieveUserData(self):  
 
@@ -128,6 +166,7 @@ class RegisterPage():
 
 register_page = RegisterPage()
 register_page.run()
+register_page.PasswordStrengthChecker()
 
 
         
