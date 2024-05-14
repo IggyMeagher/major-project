@@ -1,2 +1,0 @@
-Fullname: Silio 
-Password: b'$2b$12$eDNZ.zxihfzvuTPKDWvma.JBJHwBmsI1ZMXbKfB0K7/QE36H81usK' 
