@@ -1,51 +1,69 @@
 import requests
 from bs4 import BeautifulSoup
+import csv
 import os
 
-# Create a directory to store the images if it doesn't already exist
-img_directory = 'images'
-if not os.path.exists(img_directory):
-    os.makedirs(img_directory)
+# Define the URL and headers
+url = 'https://www.woolworths.com.au/shop/browse/fruit-veg/fruit'
+headers = {'User-Agent': 'Mozilla/5.0'}
 
-# URL of the webpage you want to scrape
-url = 'https://web.archive.org/web/20231207103929/https://www.harrisfarm.com.au/collections/in-season-december'
+# Fetch the page
+print("Fetching the webpage...")
+response = requests.get(url, headers=headers)
+soup = BeautifulSoup(response.text, 'html.parser')
+print("Webpage fetched.")
 
-# Send a GET request to the webpage
-response = requests.get(url)
+# Function to clean the name
+def clean_name(name):
+    name = name.replace('_', ' ')
+    name = ' '.join([word for word in name.split() if not any(char.isdigit() for char in word)])
+    return name.strip()
 
-# Check if the request was successful
-if response.status_code == 200:
-    # Parse the HTML content of the page with BeautifulSoup
-    soup = BeautifulSoup(response.text, 'html.parser')
-    
-    # Locate all containers that include both image and name
-    containers = soup.find_all('div', class_='inner-product')
-    
-    # Loop through each container
-    for container in containers:
-        # Find the image element within the container
-        img = container.find('img', class_='lazyOwl')
-        # Extract the name from the title or link text, found in the container's caption
-        name = container.find('p', class_='title').get_text(strip=True) if container.find('p', class_='title') else 'Unnamed'
-
-        if img and 'data-src' in img.attrs:
-            image_url = img['data-src']
-            if image_url.startswith('//'):
-                image_url = 'http:' + image_url  # Ensure the URL is complete
-            
-            # Sanitize the file name derived from the fruit name
-            file_name = name.replace(' ', '_').replace('/', '_').replace('%', '').replace('-', '_') + '.jpg'
-            
-            # Download the image
-            img_response = requests.get(image_url)
-            if img_response.status_code == 200:
-                # Save the image to a file in the 'img' directory
-                with open(os.path.join(img_directory, file_name), 'wb') as f:
-                    f.write(img_response.content)
-                print(f"Downloaded and saved: {file_name}")
-            else:
-                print(f"Failed to download image from {image_url}")
+# Extract data from the page
+products = []
+print("Extracting products...")
+product_tiles = soup.select('.shelfProductTile')
+print(f"Found {len(product_tiles)} product tiles.")
+for product in product_tiles:
+    try:
+        aria_label = product.select_one('.shelfProductTile-descriptionLink').get('aria-label')
+        if aria_label:
+            name = clean_name(aria_label.split(',')[0].strip())
+            category = 'Fruit'
+            image_url = product.select_one('.shelfProductTile-image img')['src']
+            popularity = 3  # Default to least popular; you can implement logic to adjust this based on your criteria
+            products.append([name, category, popularity, '', image_url])
+            print(f"Extracted product: {name}")
         else:
-            print("Image URL not found or invalid in container.")
+            print("No aria-label found.")
+    except Exception as e:
+        print(f"Error extracting product: {e}")
+
+print(f"Total products extracted: {len(products)}")
+
+# Read the existing CSV file
+csv_file = 'FruitsAndVegetables.csv'
+if os.path.exists(csv_file):
+    with open(csv_file, mode='r', newline='') as file:
+        reader = csv.reader(file)
+        existing_products = list(reader)
 else:
-    print(f"Failed to retrieve webpage, status code: {response.status_code}")
+    existing_products = [['Name', 'Category', 'Popularity', 'Season', 'Image Location']]
+
+# Create a set of existing names to avoid duplicates
+existing_names = set(row[0] for row in existing_products[1:])
+print(f"Existing products in CSV: {len(existing_names)}")
+
+# Write the updated data to the CSV file
+with open(csv_file, mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerows(existing_products)
+    new_entries = 0
+    for product in products:
+        if product[0] not in existing_names:
+            writer.writerow(product)
+            existing_names.add(product[0])
+            new_entries += 1
+            print(f"Added new product: {product[0]}")
+
+print(f"Total new products added: {new_entries}")

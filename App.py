@@ -4,26 +4,35 @@ from PIL import Image
 import os
 import re
 import bcrypt
+import pandas as pd
 
+# Load the CSV file into a DataFrame
+df = pd.read_csv('FruitsAndVegetables.csv', encoding='utf-8-sig')
 
-with open('FruitsAndVegetables.txt', 'r') as file: #setting this globaly, for the methods to work
-    FruitsAndVegetables = [line.strip() for line in file.readlines()] #setting the way the computer will read the fruitsandvegetables
+# Extract the relevant columns
+fruits_and_vegetables = df[['Name', 'Image Location']].dropna().values.tolist()
 
+# Separate names and image paths
+names = [item[0] for item in fruits_and_vegetables]
+name_to_image = {item[0]: item[1] for item in fruits_and_vegetables}
 
 class Page():
-    def __init__(self):
+    def __init__(self, use_frame=True):
         self.app = customtkinter.CTk() #this is the app
-        self.frame = customtkinter.CTkFrame(self.app, fg_color='white') #defining the frame
         self.app.geometry('400x400') #how large the app is
         customtkinter.set_appearance_mode('light')  # Set appearance mode globally
         customtkinter.set_default_color_theme('green')  # Set theme globally
 
-        self.frame.pack(pady=20, padx=10, fill='both', expand=True) #the frame is unversal, hence within the page class
+        if use_frame:
+            self.frame = customtkinter.CTkFrame(self.app, fg_color ='white') #defining the frame
+            self.frame.pack(pady=20, padx=60, expand=True, fill='both') #the frame is universal, hence within the page class
 
-        for i in range(11): #acctually 12
-            self.frame.grid_columnconfigure(i, weight=1,)#setting the grid, this is the columns
-        for i in range(12): #acctually 13
-            self.frame.grid_rowconfigure(i, weight=1,) #and this is the rows
+            for i in range(11): #acctually 12
+                self.frame.grid_columnconfigure(i, weight=1,)#setting the grid, this is the columns
+                self.app.grid_columnconfigure(i, weight=1)
+            for i in range(12): #acctually 13
+                self.frame.grid_rowconfigure(i, weight=1,) #and this is the rows
+                self.app.grid_rowconfigure(i, weight=1)
 
     def run(self):
         self.app.mainloop()
@@ -45,8 +54,8 @@ class LoginPage(Page):
         self.SignUpLabel = customtkinter.CTkButton(self.frame, text='Dont have an account? Sign up here!', 
                                            font=('inter', 10), 
                                            text_color='black', 
-                                           fg_color='#dbdbdb', # background color of the button it blends in, used eyedropper tool on google
-                                           hover_color='#dbdbdb', # background color on hover
+                                           fg_color='white', # background color of the button it blends in, used eyedropper tool on google
+                                           hover_color='white', # background color on hover
                                            border_width=0, # no border
                                            corner_radius=0) # no rounded corners to mimic a label
         
@@ -120,29 +129,56 @@ class RegisterPage(Page):
 
 class QuizzPage(Page):
     def __init__(self):
-        super().__init__()
+        super().__init__(use_frame=False)
+
 
         self.correct = False
-        self.CumulatedNums = sample(FruitsAndVegetables, 4)
+        self.CumulatedNums = sample(names, 4)
         self.score = 0
         self.AnsweredQuestions = []
         self.CorrectAnswer = self.CumulatedNums[randint(0,3)]
+
+        self.QuizzFrame = customtkinter.CTkFrame(self.app, fg_color='white') #defining the frame
+        self.ImageFrame = customtkinter.CTkFrame(self.app, fg_color='white')
             
-        self.surveybutton1 = customtkinter.CTkButton(master=self.frame, text=self.CumulatedNums[0], command=lambda: self.ListeningIfCorrect(self.surveybutton1)) #setting this up so the paramater (clicked button works)
-        self.surveybutton2 = customtkinter.CTkButton(master=self.frame, text=self.CumulatedNums[1], command=lambda: self.ListeningIfCorrect(self.surveybutton2)) #setting as lambda, so the function wont initiate untill the button is pressed
-        self.surveybutton3 = customtkinter.CTkButton(master=self.frame, text=self.CumulatedNums[2], command=lambda: self.ListeningIfCorrect(self.surveybutton3))
-        self.surveybutton4 = customtkinter.CTkButton(master=self.frame, text=self.CumulatedNums[3], command=lambda: self.ListeningIfCorrect(self.surveybutton4))
+        self.surveybutton1 = customtkinter.CTkButton(master=self.QuizzFrame, text=self.CumulatedNums[0],font=self.get_font(self.CumulatedNums[0]), command=lambda: self.ListeningIfCorrect(self.surveybutton1)) #setting this up so the paramater (clicked button works)
+        self.surveybutton2 = customtkinter.CTkButton(master=self.QuizzFrame, text=self.CumulatedNums[1],font=self.get_font(self.CumulatedNums[0]), command=lambda: self.ListeningIfCorrect(self.surveybutton2)) #setting as lambda, so the function wont initiate untill the button is pressed
+        self.surveybutton3 = customtkinter.CTkButton(master=self.QuizzFrame, text=self.CumulatedNums[2],font=self.get_font(self.CumulatedNums[0]), command=lambda: self.ListeningIfCorrect(self.surveybutton3))
+        self.surveybutton4 = customtkinter.CTkButton(master=self.QuizzFrame, text=self.CumulatedNums[3],font=self.get_font(self.CumulatedNums[0]), command=lambda: self.ListeningIfCorrect(self.surveybutton4))
+
+        #intialising the frames
+
+        self.ImageFrame.pack(pady=5, padx=40, expand=True, fill='both') 
+        self.QuizzFrame.pack(pady=10, padx=40, expand=False, fill='none')
+
+        for i in range(11): #acctually 12
+            self.ImageFrame.grid_columnconfigure(i, weight=1,)#setting the grid, this is the columns
+            self.QuizzFrame.grid_columnconfigure(i, weight=1)
+        for i in range(12): #acctually 13
+            self.ImageFrame.grid_rowconfigure(i, weight=1,)#setting the grid, this is the columns
+            self.QuizzFrame.grid_rowconfigure(i, weight=1)
+            
 
         #temporary label that shows the answer
 
-        self.RefImage = customtkinter.CTkImage(light_image=Image.open('images/AmbrosiaApple.png'), size=(150,150)) #this is the uscase of the 'import pillow' api, allowing for the size= and light_image functionality
-        self.ImageLabel = customtkinter.CTkLabel(master=self.frame, text='', image=self.RefImage) #I intitialise this label as you cannot pack or grid the CTKimage, so this allows for image placement onto the self.frame
-
-        self.surveybutton1.grid(column=5, row=9, padx=7, pady=0) #placing the widjets on a grid that is defined within the page class
-        self.surveybutton2.grid(column=8, row=9, padx=7, pady=0)
-        self.surveybutton3.grid(column=5, row=10, padx=7, pady=0)
-        self.surveybutton4.grid(column=8, row=10, padx=7, pady=0)
+        self.RefImage = customtkinter.CTkImage(light_image=Image.open(name_to_image[self.CorrectAnswer]), size=(150,150)) #this is the uscase of the 'import pillow' api, allowing for the size= and light_image functionality
+        self.ImageLabel = customtkinter.CTkLabel(master=self.ImageFrame, text='', image=self.RefImage) #I intitialise this label as you cannot pack or grid the CTKimage, so this allows for image placement onto the self.frame
+        self.surveybutton1.grid(column=5, row=6, padx=10, pady=5) #placing the widjets on a grid that is defined within the page class
+        self.surveybutton2.grid(column=8, row=6, padx=10, pady=5)
+        self.surveybutton3.grid(column=5, row=7, padx=10, pady=5)
+        self.surveybutton4.grid(column=8, row=7, padx=10, pady=5)
         self.ImageLabel.grid(column=5, row=5)
+
+    def get_font(self, text):
+        length = len(text)
+        if length <= 5:
+            return ('Helvetica', 14)
+        elif length <= 10:
+            return ('Helvetica', 13)
+        elif length <= 15:
+            return ('Helvetica', 12)
+        else:
+            return ('Helvetica', 8)
     
 
     def ListeningIfCorrect(self, clicked_button):
@@ -158,13 +194,24 @@ class QuizzPage(Page):
             clicked_button.configure(fg_color='#800020', hover_color='#800020')
         
     def UpdateQuestions(self):
+
+        #changing the appropriate data
+
+        self.CumulatedNums = sample(names, 4) #generating new questions
+        self.CorrectAnswer = self.CumulatedNums[randint(0, 3)]
         print(self.AnsweredQuestions)
-        self.CumulatedNums = sample(FruitsAndVegetables, 4) #generating new questions
-        self.CorrectAnswer = self.CumulatedNums[randint(0,3)]
-        self.surveybutton1.configure(text=self.CumulatedNums[0], fg_color='#2cc984', hover_color='#09955b') #changing the text of the buttons, when the answer is correct
-        self.surveybutton2.configure(text=self.CumulatedNums[1], fg_color='#2cc984', hover_color='#09955b')
-        self.surveybutton3.configure(text=self.CumulatedNums[2], fg_color='#2cc984', hover_color='#09955b')
-        self.surveybutton4.configure(text=self.CumulatedNums[3], fg_color='#2cc984', hover_color='#09955b')   
+        
+        #changing the image
+
+        self.RefImage = customtkinter.CTkImage(light_image=Image.open(name_to_image[self.CorrectAnswer]), size=(150,150)) #update the image
+        self.ImageLabel.configure(image=self.RefImage)
+
+        #changing the buttons
+       
+        self.surveybutton1.configure(text=self.CumulatedNums[0],font=self.get_font(self.CumulatedNums[0]), fg_color='#2cc984', hover_color='#09955b') #changing the text of the buttons, when the answer is correct
+        self.surveybutton2.configure(text=self.CumulatedNums[1],font=self.get_font(self.CumulatedNums[1]), fg_color='#2cc984', hover_color='#09955b')
+        self.surveybutton3.configure(text=self.CumulatedNums[2],font=self.get_font(self.CumulatedNums[2]), fg_color='#2cc984', hover_color='#09955b')
+        self.surveybutton4.configure(text=self.CumulatedNums[3],font=self.get_font(self.CumulatedNums[3]), fg_color='#2cc984', hover_color='#09955b')   
         print(self.CorrectAnswer)
 
 
