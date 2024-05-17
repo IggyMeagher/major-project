@@ -1,3 +1,4 @@
+
 import customtkinter
 from random import randint, sample
 from PIL import Image
@@ -6,20 +7,23 @@ import re
 import bcrypt
 import pandas as pd
 
-# Load the CSV file into a DataFrame
-df = pd.read_csv('FruitsAndVegetables.csv', encoding='utf-8-sig')
+df = pd.read_csv('FruitsAndVegetables.csv', encoding='utf-8-sig')#Reading the CSV file into a DataFrame using pandas, i am unsure of how this works fully.
 
-# Extract the relevant columns
-fruits_and_vegetables = df[['Name', 'Image Location']].dropna().values.tolist()
+fruits_and_vegetables = df[['Name', 'Category', 'Image Location']].dropna().values.tolist()# Extract the relevant columns (Name, Category, Image Location) and drop any rows with missing values. CHATGPT helped with this.(a bit cheeky)
 
-# Separate names and image paths
-names = [item[0] for item in fruits_and_vegetables]
-name_to_image = {item[0]: item[1] for item in fruits_and_vegetables}
+category_to_items = {} #Initialize an empty dictionary to group items by category, dictionaries are good because i groups items in pairs, which is essential for this usecase
+
+for name, category, image_location in fruits_and_vegetables: #Loop through the list of fruits and vegetables
+    if category not in category_to_items: #If the category is not already a key in the dictionary, add it with an empty list as its value
+        category_to_items[category] = []
+    category_to_items[category].append((name, image_location))  #Append the current item's name and image location to the list for its category
+
+
 
 class Page():
     def __init__(self, use_frame=True):
         self.app = customtkinter.CTk() #this is the app
-        self.app.geometry('400x400') #how large the app is
+        self.app.geometry('600x600') #how large the app is
         customtkinter.set_appearance_mode('light')  # Set appearance mode globally
         customtkinter.set_default_color_theme('green')  # Set theme globally
 
@@ -71,7 +75,7 @@ class RegisterPage(Page):
     def __init__(self):
         super().__init__()
 
-        self.TitleLabel = customtkinter.CTkLabel(self.frame, text='HFM Learning Registration', font=('inter', 20))
+        self.TitleLabel = customtkinter.CTkLabel(self.frame, text='HFM Learning Registration', font=('inter', 20)) #just all the widjets being intialised, not really anything special
         self.NameTextbox = customtkinter.CTkEntry(self.frame, placeholder_text="Enter full name")
         self.PasswordTextBox = customtkinter.CTkEntry(self.frame, placeholder_text='Enter password', show='•')
         self.ConfirmPasswordTextBox = customtkinter.CTkEntry(self.frame, placeholder_text='Confirm Password', show='•')
@@ -133,18 +137,17 @@ class QuizzPage(Page):
 
 
         self.correct = False
-        self.CumulatedNums = sample(names, 4)
         self.score = 0
         self.AnsweredQuestions = []
-        self.CorrectAnswer = self.CumulatedNums[randint(0,3)]
 
         self.QuizzFrame = customtkinter.CTkFrame(self.app, fg_color='white') #defining the frame
         self.ImageFrame = customtkinter.CTkFrame(self.app, fg_color='white')
             
-        self.surveybutton1 = customtkinter.CTkButton(master=self.QuizzFrame, text=self.CumulatedNums[0],font=self.get_font(self.CumulatedNums[0]), command=lambda: self.ListeningIfCorrect(self.surveybutton1)) #setting this up so the paramater (clicked button works)
-        self.surveybutton2 = customtkinter.CTkButton(master=self.QuizzFrame, text=self.CumulatedNums[1],font=self.get_font(self.CumulatedNums[0]), command=lambda: self.ListeningIfCorrect(self.surveybutton2)) #setting as lambda, so the function wont initiate untill the button is pressed
-        self.surveybutton3 = customtkinter.CTkButton(master=self.QuizzFrame, text=self.CumulatedNums[2],font=self.get_font(self.CumulatedNums[0]), command=lambda: self.ListeningIfCorrect(self.surveybutton3))
-        self.surveybutton4 = customtkinter.CTkButton(master=self.QuizzFrame, text=self.CumulatedNums[3],font=self.get_font(self.CumulatedNums[0]), command=lambda: self.ListeningIfCorrect(self.surveybutton4))
+        self.surveybutton1 = customtkinter.CTkButton(master=self.QuizzFrame, text='', command=lambda: self.ListeningIfCorrect(self.surveybutton1)) #setting this up so the paramater (clicked button works)
+        self.surveybutton2 = customtkinter.CTkButton(master=self.QuizzFrame, text='', command=lambda: self.ListeningIfCorrect(self.surveybutton2)) #setting as lambda, so the function wont initiate untill the button is pressed
+        self.surveybutton3 = customtkinter.CTkButton(master=self.QuizzFrame, text='', command=lambda: self.ListeningIfCorrect(self.surveybutton3))
+        self.surveybutton4 = customtkinter.CTkButton(master=self.QuizzFrame, text='', command=lambda: self.ListeningIfCorrect(self.surveybutton4))
+        
 
         #intialising the frames
 
@@ -161,25 +164,21 @@ class QuizzPage(Page):
 
         #temporary label that shows the answer
 
-        self.RefImage = customtkinter.CTkImage(light_image=Image.open(name_to_image[self.CorrectAnswer]), size=(150,150)) #this is the uscase of the 'import pillow' api, allowing for the size= and light_image functionality
-        self.ImageLabel = customtkinter.CTkLabel(master=self.ImageFrame, text='', image=self.RefImage) #I intitialise this label as you cannot pack or grid the CTKimage, so this allows for image placement onto the self.frame
-        self.surveybutton1.grid(column=5, row=6, padx=10, pady=5) #placing the widjets on a grid that is defined within the page class
-        self.surveybutton2.grid(column=8, row=6, padx=10, pady=5)
-        self.surveybutton3.grid(column=5, row=7, padx=10, pady=5)
-        self.surveybutton4.grid(column=8, row=7, padx=10, pady=5)
+        self.ImageLabel = customtkinter.CTkLabel(master=self.ImageFrame, text='') #I intitialise this label as you cannot pack or grid the CTKimage, so this allows for image placement onto the self.frame
+        
+        self.surveybutton1.grid(column=5, row=6, padx=10, pady=5, sticky = 'nsew',  columnspan = 3) #placing the widjets on a grid that is defined within the page class
+        self.surveybutton2.grid(column=8, row=6, padx=10, pady=5, sticky = 'nsew',  columnspan = 3)
+        self.surveybutton3.grid(column=5, row=7, padx=10, pady=5, sticky = 'nsew',  columnspan = 3)
+        self.surveybutton4.grid(column=8, row=7, padx=10, pady=5, sticky = 'nsew', columnspan = 3)
+        
         self.ImageLabel.grid(column=5, row=5)
 
-    def get_font(self, text):
-        length = len(text)
-        if length <= 5:
-            return ('Helvetica', 14)
-        elif length <= 10:
-            return ('Helvetica', 13)
-        elif length <= 15:
-            return ('Helvetica', 12)
-        else:
-            return ('Helvetica', 8)
-    
+        self.UpdateQuestions()
+    def select_random_category_items(self):
+        category = sample(list(category_to_items.keys()), 1)[0] #converting the  categories to a list and randomly select one category
+        selected_items = sample(category_to_items[category], 4) #Putting four items from the catagorty and putting it into a list as well
+        return selected_items #returning the selected items to be used later
+
 
     def ListeningIfCorrect(self, clicked_button):
         
@@ -189,29 +188,29 @@ class QuizzPage(Page):
                 self.correct = True #if the correct label is correct
                 self.score = self.score +1 #changes the score accordingly
                 self.UpdateQuestions() #gives the user new questions
+                self.AnsweredQuestions.append(self.CorrectAnswer)
         else:
             clicked_button.configure(text='✖') #informs the user if the answer is wrong, and makes them continue untill it is correct
             clicked_button.configure(fg_color='#800020', hover_color='#800020')
-        
+    
+     
     def UpdateQuestions(self):
 
-        #changing the appropriate data
+        selected_items = self.select_random_category_items() #selecting a new set of items from the random catagory
+        self.CumulatedNums = [item[0] for item in selected_items] #using a for loop, to place items in cumulated nums
+        self.CorrectAnswer = self.CumulatedNums[randint(0, 3)] #randomly selecting one of them to be the answer
 
-        self.CumulatedNums = sample(names, 4) #generating new questions
-        self.CorrectAnswer = self.CumulatedNums[randint(0, 3)]
-        print(self.AnsweredQuestions)
+        image_location = [item[1] for item in selected_items if item[0] == self.CorrectAnswer][0] #Finding the image location of the correct answer and updates the image displayed in the quiz
+        self.RefImage = customtkinter.CTkImage(light_image=Image.open(image_location), size=(250, 250)) #defining the referance image after this, however the label above is used to grid it.
+        self.ImageLabel.configure(image=self.RefImage) #as you can see, it is being used in unicen.
+
+        #Updating the text on the quiz buttons with the new set of items
+        self.surveybutton1.configure(text=self.CumulatedNums[0], fg_color='#2cc984', hover_color='#09955b')
+        self.surveybutton2.configure(text=self.CumulatedNums[1], fg_color='#2cc984', hover_color='#09955b')
+        self.surveybutton3.configure(text=self.CumulatedNums[2], fg_color='#2cc984', hover_color='#09955b')
+        self.surveybutton4.configure(text=self.CumulatedNums[3], fg_color='#2cc984', hover_color='#09955b')
         
-        #changing the image
-
-        self.RefImage = customtkinter.CTkImage(light_image=Image.open(name_to_image[self.CorrectAnswer]), size=(150,150)) #update the image
-        self.ImageLabel.configure(image=self.RefImage)
-
-        #changing the buttons
-       
-        self.surveybutton1.configure(text=self.CumulatedNums[0],font=self.get_font(self.CumulatedNums[0]), fg_color='#2cc984', hover_color='#09955b') #changing the text of the buttons, when the answer is correct
-        self.surveybutton2.configure(text=self.CumulatedNums[1],font=self.get_font(self.CumulatedNums[1]), fg_color='#2cc984', hover_color='#09955b')
-        self.surveybutton3.configure(text=self.CumulatedNums[2],font=self.get_font(self.CumulatedNums[2]), fg_color='#2cc984', hover_color='#09955b')
-        self.surveybutton4.configure(text=self.CumulatedNums[3],font=self.get_font(self.CumulatedNums[3]), fg_color='#2cc984', hover_color='#09955b')   
+        # Print out the correct answer for debugging purposes
         print(self.CorrectAnswer)
 
 

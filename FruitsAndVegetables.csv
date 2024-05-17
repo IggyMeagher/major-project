@@ -1,18 +1,18 @@
 ﻿Name,Category,Popularity,Season,Image Location
-Grapefruit Ruby Red Imperfect,Other Fruits,3,,images/Grapefruit_Ruby_Red_Imperfect_Each.jpg
+Grapefruit Ruby Red Imperfect,Citrus,3,,images/Grapefruit_Ruby_Red_Imperfect_Each.jpg
 Bean Sprouts,Vegetables,3,,images/Bean_Sprouts_400g.jpg
-Avocado Imperfect,Other Fruits,3,,images/Avocado_Imperfect_Each.jpg
-Kiwifruit Gold,Other Fruits,2,,images/Kiwifruit_Gold_Each.jpg
-Grapes Red Seedless,Other Fruits,1,,images/Grapes_Red_Seedless_Premium_min_500g.jpg
+Avocado Imperfect,Avocados,3,,images/Avocado_Imperfect_Each.jpg
+Kiwifruit Gold,Tropical Fruits,2,,images/Kiwifruit_Gold_Each.jpg
+Grapes Red Seedless,Berries,1,,images/Grapes_Red_Seedless_Premium_min_500g.jpg
 Beetroot Baby,Vegetables,3,,images/Beetroot_Baby_Each.jpg
-HFM Watermelon Cut,Melons,1,,images/Harris_Farm_Watermelon_Cut_1kg.jpg
-Pomello,Other Fruits,3,,images/Pomello_Each.jpg
-Dates,Other Fruits,3,,images/Dates_Loose_min_250g.jpg
+HFM Watermelon Cut,Sliced Fruits,1,,images/Harris_Farm_Watermelon_Cut_1kg.jpg
+Pomello,Citrus,3,,images/Pomello_Each.jpg
+Dates,Dried Fruits,3,,images/Dates_Loose_min_250g.jpg
 Cabbage,Vegetables,2,,images/Cabbage_qtr.jpg
 Apple Pink Lady Organic,Apples,1,,images/Apple_Pink_Lady_Organic_1kg.jpg
 Apple Royal Gala Organic,Apples,1,,images/Apple_Royal_Gala_Organic_1kg.jpg
 Melon Rockmelon,Melons,2,,images/Melon_Rockmelon_Large_Each.jpg
-Feijoas,Other Fruits,3,,images/Feijoas_Each.jpg
+Feijoas,Tropical Fruits,3,,images/Feijoas_Each.jpg
 Lemon Box,Citrus,1,,images/Lemon_Box_15kg.jpg
 Limes Blood,Citrus,2,,images/Limes_Blood_125g.jpg
 Bi Colour Corn,Vegetables,2,,images/Bi_Colour_Corn_Loose_Each.jpg
@@ -21,7 +21,7 @@ Apple Fuji Imperfect,Apples,3,,images/Apple_Fuji_Imperfect_Each.jpg
 Orange Valencia Imperfect,Citrus,3,,images/Orange_Valencia_Imperfect_Each.jpg
 Apple Rockit,Apples,2,,images/Apple_Rockit_Each.jpg
 Tomato Sweet Delights,Tomatoes,2,,images/Tomato_Sweet_Delights_200g.jpg
-Fuyu Fruit,Other Fruits,3,,images/Fuyu_Fruit_Each.jpg
+Fuyu Fruit,Tropical Fruits,3,,images/Fuyu_Fruit_Each.jpg
 Mandarins Afourer Imperfect Box,Citrus,1,,images/Mandarins_Afourer_Imperfect_Box_9kg.jpg
 Tomato Truss,Tomatoes,1,,images/Tomato_Truss_5_Pieces.jpg
 Avocado Hass Large,Avocados,1,,images/Avocado_Hass_Large_Each.jpg
@@ -36,150 +36,144 @@ Pear Nashi White,Pears,2,,images/Pear_Nashi_White_Each.jpg
 Beetroot Love Beets,Vegetables,3,,images/Beetroot_Love_Beets_Organic_Peel_and_Cooked_250g.jpg
 Lime Organic,Citrus,3,,images/Lime_Organic_min_250g.jpg
 Orange Navel Organic,Citrus,1,,images/Orange_Navel_Organic_3kg_Net.jpg
-Beans Organic,Other Fruits,3,,images/Beans_Organic_min.jpg
-HFM Coconut Pieces,Vegetables,3,,images/Harris_Farm_Coconut_Pieces_250g.jpg
+Beans Organic,Vegetables,3,,images/Beans_Organic_min.jpg
+HFM Coconut Pieces,Sliced Fruits,3,,images/Harris_Farm_Coconut_Pieces_250g.jpg
 Imperfect Blueberries Tray,Berries,2,,images/Imperfect_Blueberries_Tray_Sale_12_punnets.jpg
 Tomato Sampari Cocktail Truss,Tomatoes,2,,images/Tomato_Sampari_Cocktail_Truss_250g.jpg
-Coconut Drinking,Vegetables,2,,images/Coconut_Drinking_Each.jpg
+Coconut Drinking,Tropical Fruits,2,,images/Coconut_Drinking_Each.jpg
 Melon Watermelon Seedless,Melons,1,,images/Melon_Watermelon_Seedless_Whole_Each.jpg
 Oranges Valencia,Citrus,1,,images/Oranges_Valencia_3kg.jpg
 Apple Bravo,Apples,2,,images/Apple_Bravo_Premium_Each.jpg
 Pear Beurre Bosc,Pears,2,,images/Pear_Beurre_Bosc_Each.jpg
 Lemon Prepack,Citrus,1,,images/Lemon_Prepack.jpg
-Avocado Organic Small,Other Fruits,3,,images/Avocado_Organic_Small_Each.jpg
-Grapes Black Sapphire,Other Fruits,2,,images/Grapes_Black_Sapphire_Min_500g.jpg
+Grapes Black Sapphire,Berries,2,,images/Grapes_Black_Sapphire_Min_500g.jpg
 Strawberries,Berries,1,,images/Strawberries_Premium_250g.jpg
 Melon Honeydew,Melons,2,,images/Melon_Honeydew_Half_Each.jpg
-Banana,Other Fruits,1,,images/Banana_Each.jpg
-Strawberries,Berries,1,,images/Strawberries_250g.jpg
-Pineapple,Other Fruits,1,,images/Pineapple_Large_Each.jpg
-Passionfruit,Other Fruits,2,,images/Passionfruit_Each.jpg
+Banana,Tropical Fruits,1,,images/Banana_Each.jpg
+Pineapple,Tropical Fruits,1,,images/Pineapple_Large_Each.jpg
+Passionfruit,Tropical Fruits,2,,images/Passionfruit_Each.jpg
 Pear Corella,Pears,2,,images/Pear_Corella_Each.jpg
-Pear Packham,Pears,2,,images/Pear_Packham_Value_Bucket.jpg
+Pear Packham Bucket,Pears,2,,images/Pear_Packham_Value_Bucket.jpg
 Broccoli Head,Vegetables,1,,images/Broccoli_Head_Each.jpg
 Apple Royal Gala,Apples,1,,images/Apple_Royal_Gala_Premium_Each.jpg
 Apple Yellow,Apples,2,,images/Apple_Yellow_Each.jpg
-Cherries Premium,Other Fruits,2,,images/Cherries_Premium_Loose_Min_500g.jpg
+Cherries Premium,Berries,2,,images/Cherries_Premium_Loose_Min_500g.jpg
 Asparagus,Vegetables,2,,images/Asparagus_Bunch.jpg
 Melon Bitter,Melons,3,,images/Melon_Bitter_Each.jpg
-Grapes White,Other Fruits,2,,images/Grapes_White_min_1kg.jpg
+Grapes White,Berries,2,,images/Grapes_White_min_1kg.jpg
 Beetroot,Vegetables,3,,images/Beetroot_Bunch.jpg
 Apple Granny Smith Organic,Apples,1,,images/Apple_Granny_Smith_Organic_1kg.jpg
-Quince Imperfect ,Other Fruits,3,,images/Quince_Imperfect_Each.jpg
+Quince Imperfect,Fruits,3,,images/Quince_Imperfect_Each.jpg
 Lemons,Citrus,1,,images/Lemon_Premium_Each.jpg
-Papaya Red,Other Fruits,2,,images/Papaya_Red_Each.jpg
+Papaya Red,Tropical Fruits,2,,images/Papaya_Red_Each.jpg
 Beetroot Bag,Vegetables,3,,images/Beetroot_Bag_1kg.jpg
 Apples Custard,Apples,3,,images/Apples_Custard_(each).jpg
 Blueberries,Berries,1,,images/Blueberries_Premium_125g.jpg
 Blueberries Box,Berries,1,,images/Blueberries_Box_12_x_125g.jpg
 Pear Packham,Pears,2,,images/Pear_Packham_Large_Premium_Each.jpg
 Tomato Imperfect,Tomatoes,3,,images/Tomato_Imperfect_Each.jpg
-Pear Red Sensation,Pears,2,,images/Pear_Red_Sensation_Each.jpg
-Pineapple Sweet Topless,Other Fruits,1,,images/Pineapple_Sweet_Topless_Each.jpg
-Pear Packham Imperfect,Other Fruits,3,,images/Pear_Packham_Imperfect_Each.jpg
+Pineapple Sweet Topless,Tropical Fruits,1,,images/Pineapple_Sweet_Topless_Each.jpg
+Pear Packham Imperfect,Pears,3,,images/Pear_Packham_Imperfect_Each.jpg
 Melon Champagne,Melons,3,,images/Melon_Champagne_Cut_Each.jpg
 Mandarin Imperial,Citrus,1,,images/Mandarin_Imperial_Premium_Each.jpg
 Buk Choy Shanghai,Vegetables,3,,images/Buk_Choy_Shanghai_Baby_Bunch_of_2_3.jpg
-Apples Bonza,Apples,3,,images/Apples_Bonza_(each).jpg
 Ambrosia Apple,Apples,3,,images/AmbrosiaApple.png
-HFM Pineapple Cut,Other Fruits,1,,images/Harris_Farm_Pineapple_Cut_500g.jpg
+HFM Pineapple Cut,Sliced Fruits,1,,images/Harris_Farm_Pineapple_Cut_500g.jpg
 Lemon Imperfect,Citrus,3,,images/Lemon_Imperfect_Each.jpg
-Paw Paw Cooking,Other Fruits,3,,images/Paw_Paw_Cooking_Each.jpg
+Paw Paw Cooking,Tropical Fruits,3,,images/Paw_Paw_Cooking_Each.jpg
 Brussels Sprouts,Vegetables,2,,images/Brussels_Sprouts_Prepack_500g.jpg
 Apple Granny Smith,Apples,1,,images/Apple_Granny_Smith_Premium_Small_Each.jpg
-Grapes Premium White Seedless,Other Fruits,2,,images/Grapes_Premium_White_Seedless_500g.jpg
+Grapes Premium White Seedless,Berries,2,,images/Grapes_Premium_White_Seedless_500g.jpg
 Tomato Gourmet Organic,Tomatoes,3,,images/Tomato_Gourmet_Organic_500g.jpg
 Mandarin Afourer,Citrus,1,,images/Mandarin_Afourer_Each.jpg
-Grapes Red Seedless,Other Fruits,1,,images/Grapes_Red_Seedless_min_1kg.jpg
-Nectarine Yellow Organic,Other Fruits,2,,images/Nectarine_Yellow_Organic_500g.jpg
+Nectarine Yellow Organic,Stone Fruits,2,,images/Nectarine_Yellow_Organic_500g.jpg
 Cabbage Green,Vegetables,2,,images/Cabbage_Green_Whole.jpg
 Apples Delicious Imperfect,Apples,3,,images/Apples_Delicious_Imperfect_Pick_(each).jpg
-Figs Fresh Black,Other Fruits,3,,images/Figs_Fresh_Black_Each.jpg
-Pineapple Topless,Other Fruits,1,,images/Pineapple_Topless_Extra_Extra_Large_Each.jpg
-Pineapple Sweet,Other Fruits,1,,images/Pineapple_Large_Sweet_Half.jpg
+Figs Fresh Black,Stone Fruits,3,,images/Figs_Fresh_Black_Each.jpg
+Pineapple Topless,Tropical Fruits,1,,images/Pineapple_Topless_Extra_Extra_Large_Each.jpg
+Pineapple Sweet,Tropical Fruits,1,,images/Pineapple_Large_Sweet_Half.jpg
 Apple Imperfect Pink Lady,Apples,3,,images/Apple_Imperfect_Pink_Lady_Each.jpg
-Kiwifruit Gold Prepack,Other Fruits,2,,images/Kiwifruit_Gold_Prepack_600g.jpg
+Kiwifruit Gold Prepack,Tropical Fruits,2,,images/Kiwifruit_Gold_Prepack_600g.jpg
 Tomato Roma,Tomatoes,1,,images/Tomato_Roma_Each.jpg
-Papple,Other Fruits,3,,images/Papple_Each.jpg
+Papple,Stone Fruits,3,,images/Papple_Each.jpg
 Tomatoes Strawberry,Tomatoes,2,,images/Tomatoes_Strawberry_(180g_punnet).jpg
 Beans Hand Picked,Vegetables,2,,images/Beans_Hand_Picked_min_500g.jpg
-Fuyu Imperfect,Other Fruits,3,,images/Fuyu_Imperfect_Each.jpg
+Fuyu Imperfect,Stone Fruits,3,,images/Fuyu_Imperfect_Each.jpg
 Avocado Shepard Greenskin,Avocados,2,,images/Avocado_Shepard_Greenskin_Small_Each.jpg
-Keitt Mango,1,,images/Keitt_Mango.jpg
-KP Mango,1,,images/Kengsington_Pride.jpg
-Kent Mango,2,,images/Kent_Mango.jpg
-Calypso Mango,1,,images/Calypso_Mango.jpg
-Avocado Organic pack,Other Fruits,3,,images/Avocado_Organic_min_3_pack_600g.jpg
-HFM  Melon Trio,Melons,3,,images/Harris_Farm_Melon_Trio_500g.jpg
+Keitt Mango,Tropical Fruits,1,,images/Keitt_Mango.jpg
+KP Mango,Tropical Fruits,1,,images/Kengsington_Pride.jpg
+Kent Mango,Tropical Fruits,2,,images/Kent_Mango.jpg
+Calypso Mango,Tropical Fruits,1,,images/Calypso_Mango.jpg
+Avocado Organic pack,Avocados,3,,images/Avocado_Organic_min_3_pack_600g.jpg
+HFM Melon Trio,Melons,3,,images/Harris_Farm_Melon_Trio_500g.jpg
 Cabbage qtr,Vegetables,3,,images/Cabbage_qtr.jpg
 Apple Royal Gala Imperfect Organic 1.,Apples,3,,images/Apple_Royal_Gala_Imperfect_Organic_1.5kg.jpg
-HFM Chocolate Strawberries,Other Fruits,3,,images/Harris_Farm_Strawberries_Chocolate_Coated_x3.jpg
-Brussels Sprout,Other Fruits,3,,images/Brussels_Sprout_min.jpg
+HFM Chocolate Strawberries,Berries,3,,images/Harris_Farm_Strawberries_Chocolate_Coated_x3.jpg
+Brussels Sprout,Vegetables,3,,images/Brussels_Sprout_min.jpg
 Orange Navel Organic Net,Citrus,3,,images/Orange_Navel_Organic__Net.jpg
-Potato Dutch Cream Organic,Other Fruits,3,,images/Potato_Dutch_Cream_Organic_min.jpg
+Potato Dutch Cream Organic,Vegetables,3,,images/Potato_Dutch_Cream_Organic_min.jpg
 Tomato Truss Prepack,Tomatoes,3,,images/Tomato_Truss_5_Pieces.jpg
-Potato Washed Each,Other Fruits,3,,images/Potato_Washed_Each.jpg
+Potato Washed Each,Vegetables,3,,images/Potato_Washed_Each.jpg
 Apple Fuji Imperfect Organic 1.,Apples,3,,images/Apple_Fuji_Imperfect_Organic_1..jpg
 Melon Spanish Cut,Melons,3,,images/Melon_Spanish_Cut_Each.jpg
 Apple Imperfect Pink Lady Organic 1.,Apples,3,,images/Apple_Imperfect_Pink_Lady_Organic_1..jpg
 Chinese Cabbage Wombok,Vegetables,3,,images/Chinese_Cabbage_Wombok_Whole.jpg
-Imperfect Blueberries Tray,Other Fruits,3,,images/Imperfect_Blueberries_Tray_Sale_12_punnets.jpg
+Imperfect Blueberries Tray,Berries,3,,images/Imperfect_Blueberries_Tray_Sale_12_punnets.jpg
 Melon Watermelon Seedless,Melons,3,,images/Melon_Watermelon_Seedless_Whole_Each.jpg
-Celery Organic,Other Fruits,3,,images/Celery_Whole_Organic.jpg
+Celery Organic,Vegetables,3,,images/Celery_Whole_Organic.jpg
 Orange Navel,Citrus,3,,images/Orange_Navel_Large_Premium_Each.jpg
-Potato Red Washed,Other Fruits,3,,images/Potato_Red_Washed_Each.jpg
+Potato Red Washed,Vegetables,3,,images/Potato_Red_Washed_Each.jpg
 Tomato Truss Tray,Tomatoes,3,,images/Tomato_Truss_Tray.jpg
 Melon Honeydew Half,Melons,3,,images/Melon_Honeydew_Half_Each.jpg
 Cabbage Half,Vegetables,3,,images/Cabbage_Half.jpg
-Celery Half Organic,Other Fruits,3,,images/Celery_Half_Organic.jpg
-Pear Packham Bucket,Other Fruits,3,,images/Pear_Packham_Value_Bucket.jpg
-Asparagus Bunch,Other Fruits,3,,images/Asparagus_Bunch.jpg
+Celery Half Organic,Vegetables,3,,images/Celery_Half_Organic.jpg
+Pear Packham Bucket,Pears,3,,images/Pear_Packham_Value_Bucket.jpg
+Asparagus Bunch,Vegetables,3,,images/Asparagus_Bunch.jpg
 Apple Granny Smith Tray,Apples,3,,images/Apple_Granny_Smith_Tray_Sale.jpg
 Tomato Snacking Organic,Tomatoes,3,,images/Tomato_Snacking_Organic_200g.jpg
 Apples Custard,Apples,3,,images/Apples_Custard_(each).jpg
-HFM Guacamole,Other Fruits,3,,images/Harris_Farm_Guacamole_No_Chilli_235g.jpg
-Grapefruit Ruby Red Net,Other Fruits,3,,images/Grapefruit_Ruby_Red_3kg_Net.jpg
+HFM Guacamole,Sliced Fruits,3,,images/Harris_Farm_Guacamole_No_Chilli_235g.jpg
+Grapefruit Ruby Red Net,Citrus,3,,images/Grapefruit_Ruby_Red_3kg_Net.jpg
 Chinese Cabbage Wombok Half,Vegetables,3,,images/Chinese_Cabbage_Wombok_Half.jpg
 Melon Champagne Cut,Melons,3,,images/Melon_Champagne_Cut_Each.jpg
-Buk Choy Shanghai Baby,Other Fruits,3,,images/Buk_Choy_Shanghai_Baby_Bunch_of_2_3.jpg
+Buk Choy Shanghai,Vegetables,3,,images/Buk_Choy_Shanghai_Baby_Bunch_of_2_3.jpg
 Apples Bonza,Apples,3,,images/Apples_Bonza_(each).jpg
-Rockmelon Cut,Melons,3,,images/Harris_Farm_Rockmelon_Cut_300g.jpg
-Kengsington Pride,Other Fruits,3,,images/Kengsington_Pride.jpg
-Watermelon and Pineapple Cut,Apples,3,,images/Harris_Farm_Watermelon_and_Pineapple_Cut_300g.jpg
+Rockmelon Cut,Sliced Fruits,3,,images/Harris_Farm_Rockmelon_Cut_300g.jpg
+Kengsington Pride,Tropical Fruits,3,,images/Kengsington_Pride.jpg
+Watermelon and Pineapple Cut,Sliced Fruits,3,,images/Harris_Farm_Watermelon_and_Pineapple_Cut_300g.jpg
 Melon Rockmelon Half,Melons,3,,images/Melon_Rockmelon_Large_Half_Each.jpg
-Tender Stem Baby Broccoli,Other Fruits,3,,images/Tender_Stem_Baby_Broccoli_Bunch.jpg
-Papaya Red Half,Other Fruits,3,,images/Papaya_Red_Half_Each.jpg
-Mandarin Imperfect Bunch,Other Fruits,3,,images/Mandarin_Imperfect_Each.jpg
-Spinach Silverbeet Organic,Other Fruits,3,,images/Spinach_Silverbeet_Organic_Bunch.jpg
-Shallots,Other Fruits,3,,images/Shallots_Bunch.jpg
-HFM Fruit Salad,Other Fruits,3,,images/Harris_Farm_Fruit_Salad_350g.jpg
-Shallots Organic,Other Fruits,3,,images/Shallots_Organic_Bunch.jpg
+Tender Stem Baby Broccoli,Vegetables,3,,images/Tender_Stem_Baby_Broccoli_Bunch.jpg
+Papaya Red Half,Tropical Fruits,3,,images/Papaya_Red_Half_Each.jpg
+Mandarin Imperfect Bunch,Citrus,3,,images/Mandarin_Imperfect_Each.jpg
+Spinach Silverbeet Organic,Vegetables,3,,images/Spinach_Silverbeet_Organic_Bunch.jpg
+Shallots,Vegetables,3,,images/Shallots_Bunch.jpg
+HFM Fruit Salad,Sliced Fruits,3,,images/Harris_Farm_Fruit_Salad_350g.jpg
+Shallots Organic,Vegetables,3,,images/Shallots_Organic_Bunch.jpg
 Tomato Tiny Toms,Tomatoes,3,,images/Tomato_Tiny_Toms_125g.jpg
 Mini Melon Organic,Melons,3,,images/Mini_Melon_Organic_Each.jpg
-Beetroot Head,Other Fruits,3,,images/Beetroot_Head_Each.jpg
+Beetroot Head,Vegetables,3,,images/Beetroot_Head_Each.jpg
 Tomato Dolce Bella,Tomatoes,3,,images/Tomato_Dolce_Bella_200g.jpg
 HFM Citrus Mix,Citrus,3,,images/Harris_Farm_Citrus_Mix_300g.jpg
 Apple Pink Lady Small Each,Apples,3,,images/Apple_Pink_Lady_Small_Each.jpg
-Coconut Each,Other Fruits,3,,images/Coconut_Each.jpg
-HFM Figs Chocolate,Other Fruits,3,,images/Harris_Farm_Figs_Chocolate_Coated_x3.jpg
-Kiwifruit Green Each,Other Fruits,3,,images/Kiwifruit_Green_Each.jpg
-Autumn Raspberries,Other Fruits,3,,images/Autumn_Raspberries_125g.jpg
-Buk Choy White Long,Other Fruits,3,,images/Buk_Choy_White_Long_Bunch.jpg
-Banana Lady Finger Each,Other Fruits,3,,images/Banana_Lady_Finger_Each.jpg
-Grapes Black Seedless,Other Fruits,3,,images/Grapes_Black_Seedless_min_1kg.jpg
-Blackberries,Other Fruits,3,,images/Blackberries_125g.jpg
-Potato Washed Bag,Other Fruits,3,,images/Potato_Washed_Bag.jpg
-Imperfect Fruit Salad with Yoghurt and Granola,Other Fruits,3,,images/Imperfect_Fruit_Salad___with_Yoghurt_and_Granola.jpg
+Coconut Each,Tropical Fruits,3,,images/Coconut_Each.jpg
+HFM Figs Chocolate,Stone Fruits,3,,images/Harris_Farm_Figs_Chocolate_Coated_x3.jpg
+Kiwifruit Green Each,Tropical Fruits,3,,images/Kiwifruit_Green_Each.jpg
+Autumn Raspberries,Berries,3,,images/Autumn_Raspberries_125g.jpg
+Buk Choy White Long,Vegetables,3,,images/Buk_Choy_White_Long_Bunch.jpg
+Banana Lady Finger Each,Tropical Fruits,3,,images/Banana_Lady_Finger_Each.jpg
+Grapes Black Seedless,Berries,3,,images/Grapes_Black_Seedless_min_1kg.jpg
+Blackberries,Berries,3,,images/Blackberries_125g.jpg
+Potato Washed Bag,Vegetables,3,,images/Potato_Washed_Bag.jpg
+Imperfect Fruit Salad with Yoghurt and Granola,Sliced Fruits,3,,images/Imperfect_Fruit_Salad___with_Yoghurt_and_Granola.jpg
 Melon Spanish Whole Each,Melons,3,,images/Melon_Spanish_Whole_Each.jpg
-Chestnuts Fresh,Other Fruits,3,,images/Chestnuts_Fresh_min_500g.jpg
+Chestnuts Fresh,Dried Fruits,3,,images/Chestnuts_Fresh_min_500g.jpg
 Melon Watermelon Seedless Cut Quarter,Melons,3,,images/Melon_Watermelon_Seedless_Cut_Quarter.jpg
-Apple Pink Lady Tray Sale,Apples,3,,images/Apple_Pink_Lady_Tray_Sale.jpg
 Cabbage Green Whole,Vegetables,3,,images/Cabbage_Green_Whole.jpg
 Apples Delicious Imperfect Pick (each),Apples,3,,images/Apples_Delicious_Imperfect_Pick_(each).jpg
-Blueberries Tray Sale 12x125g,Other Fruits,3,,images/Blueberries_Tray_Sale_12x125g.jpg
-Pineapple Large Sweet Half,Apples,3,,images/Pineapple_Large_Sweet_Half.jpg
-Passionfruit x10 Netted,Other Fruits,3,,images/Passionfruit_x10_Netted.jpg
+Blueberries Tray Sale 12x125g,Berries,3,,images/Blueberries_Tray_Sale_12x125g.jpg
+Pineapple Large Sweet Half,Tropical Fruits,3,,images/Pineapple_Large_Sweet_Half.jpg
+Passionfruit x10 Netted,Tropical Fruits,3,,images/Passionfruit_x10_Netted.jpg
 Oranges Navel,Citrus,3,,images/Oranges_Navel.jpg
 Orange Imperfect Navel Each,Citrus,3,,images/Orange_Imperfect_Navel_Each.jpg
 Tomatoes Strawberry ( punnet),Tomatoes,3,,images/Tomatoes_Strawberry_(180g_punnet).jpg
-Avocado Shepard Greenskin Small Each,Other Fruits,3,,images/Avocado_Shepard_Greenskin_Small_Each.jpg
+Avocado Shepard Greenskin Small Each,Avocados,3,,images/Avocado_Shepard_Greenskin_Small_Each.jpg
