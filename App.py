@@ -18,31 +18,44 @@ for name, category, image_location in fruits_and_vegetables: #Loop through the l
         category_to_items[category] = []
     category_to_items[category].append((name, image_location))  #Append the current item's name and image location to the list for its category
 
-
-class Page():
-    def __init__(self, use_frame=True):
-        self.app = customtkinter.CTk() #this is the app
-        self.app.geometry('600x600') #how large the app is
-        customtkinter.set_appearance_mode('light')  # Set appearance mode globally
-        customtkinter.set_default_color_theme('green')  # Set theme globally
+class Page:
+    def __init__(self, master=None, use_frame=True):
+        if master is None:
+            self.app = customtkinter.CTk() #if there is no master, one will be created
+        else:
+            self.app = master #when a master is there, it uses it. This is useful for switching pages as it can change.
+        self.app.geometry('600x600') #setting the geometry
+        customtkinter.set_appearance_mode('light') #cool feature of customtkitner, allowing for themes
+        customtkinter.set_default_color_theme('green') #chose green as it matches the 'fresh' vibe
 
         if use_frame:
-            self.frame = customtkinter.CTkFrame(self.app, fg_color ='white') #defining the frame
-            self.frame.pack(pady=20, padx=60, expand=True, fill='both') #the frame is universal, hence within the page class
+            self.frame = customtkinter.CTkFrame(self.app, fg_color='white') #so, some of pages use the basic frame. Like loginpage and Registerpage. But some dont, like Quizpage. So i needed the ability to opt out.
+            self.frame.pack(pady=20, padx=60, expand=True, fill='both') #setting the frame. Using pack so it looks nice
 
-            for i in range(11): #acctually 12
-                self.frame.grid_columnconfigure(i, weight=1,)#setting the grid, this is the columns
+            for i in range(11): #setting the grid. 
+                self.frame.grid_columnconfigure(i, weight=1)
                 self.app.grid_columnconfigure(i, weight=1)
-            for i in range(12): #acctually 13
-                self.frame.grid_rowconfigure(i, weight=1,) #and this is the rows
+            for i in range(12):
+                self.frame.grid_rowconfigure(i, weight=1)
                 self.app.grid_rowconfigure(i, weight=1)
+        else:
+            self.frame = None #useful for apps that do not use frame
 
     def run(self):
-        self.app.mainloop()
+        self.app.mainloop() #universal run method. good for debugging so i can skip the login process and needed as well, to run the app.
+
+    def destroy_current_page(self): 
+        for widget in self.app.winfo_children():
+            widget.destroy() #the For loop loops through every widjet in the master and subsiquently destroys it.
+
+    def show_page(self, page_class): #this destroys eveytihng and shows a different master/page.
+        self.destroy_current_page()
+        page_class(master=self.app) #here it is changing the page.
+    
 
 class LoginPage(Page):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, master=None):
+        super().__init__(master)
 
         self.UsernameTextbox = customtkinter.CTkEntry(self.frame, placeholder_text='Username')
         self.PasswordTextbox = customtkinter.CTkEntry(self.frame, placeholder_text='Password', show = "•") #hiding the inputs
@@ -60,12 +73,14 @@ class LoginPage(Page):
                                            fg_color='white', # background color of the button it blends in, used eyedropper tool on google
                                            hover_color='white', # background color on hover
                                            border_width=0, # no border
-                                           corner_radius=0) # no rounded corners to mimic a label
+                                           corner_radius=0,
+                                           command= lambda: self.show_page(RegisterPage)) # no rounded corners to mimic a label
         self.Label.pack(pady = 50, padx = 6)
         self.UsernameTextbox.pack(pady = 10, padx = 0)
         self.PasswordTextbox.pack(pady = 10, padx = 0)
         self.LoginButton.pack(pady = 10, padx = 10)
         self.SignUpLabel.pack(padx = 10, pady = 1)
+   
 
     def CheckPW(self):
 
@@ -78,17 +93,12 @@ class LoginPage(Page):
         stored_hashed_password = file_lines[1].strip().encode('utf-8')
 
         if bcrypt.checkpw(login_password, stored_hashed_password):
-            print('welcome')
-        else:
-            print('get out')
-
-
-                
-
+            self.show_page(QuizzPage)
+            
 
 class RegisterPage(Page):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, master=None):
+        super().__init__(master)
 
         self.TitleLabel = customtkinter.CTkLabel(self.frame, text='HFM Learning Registration', font=('inter', 20)) #just all the widjets being intialised, not really anything special
         self.NameTextbox = customtkinter.CTkEntry(self.frame, placeholder_text="Enter username")
@@ -97,7 +107,7 @@ class RegisterPage(Page):
         self.NoticeLabel = customtkinter.CTkLabel(self.frame, text='', font=('inter', 12))
         self.Progressbar = customtkinter.CTkProgressBar(self.frame)
         self.RegisterButton = customtkinter.CTkButton(self.frame, text='Register', command= lambda: self.RetrieveUserData()) #lambda is needed in order to delay the exectution untill a button press
-        self.Backbutton = customtkinter.CTkButton(master=self.frame, text='✖', width=30, height=30 )
+        self.Backbutton = customtkinter.CTkButton(master=self.frame, text='✖', width=30, height=30, command=self.Exit)
 
         self.Backbutton.place(x=425,y=20)
         self.TitleLabel.pack(padx = 0, pady = 100)
@@ -111,6 +121,9 @@ class RegisterPage(Page):
         self.PasswordTextBox.bind("<KeyRelease>", self.PasswordStrengthChecker()) #setting it to when a key is
 
         self.Progressbar.set(0)
+
+    def Exit(self):
+        self.show_page(LoginPage)
 
     def PasswordStrengthChecker(self):
         password = self.PasswordTextBox.get() #getting the password input
@@ -146,20 +159,20 @@ class RegisterPage(Page):
                 with open(os.path.join(directory, f"{self.NameTextbox.get()}.txt"), 'w') as file: #'w' means write
                     file.write(f'{self.NameTextbox.get()}\n') #When writing to a file the DLL os doesn't allow for commas, in how i would usually do it. So I am using fstrings
                     file.write(self.hashed_password.decode('utf-8'))
+                    self.show_page(LoginPage)
 
 class HomePage(Page):
     def __init__(self, use_frame=False):
-        super().__init__(use_frame)
+        super().__init__()
 
-        self.app = customtkinter.CTk(fg_color='#90EE90')
-        self.MainFrame = customtkinter.CTkFrame(master=self.app, fg_color='white')
-
+        
+        self.MainFrame = customtkinter.CTkFrame(master=self.app)
         self.MainFrame.pack(pady=20, padx=60, expand=True, fill='both')
 
 
 class QuizzPage(Page):
-    def __init__(self):
-        super().__init__(use_frame=False)
+    def __init__(self, master=None):
+        super().__init__(master, use_frame=False)
 
 
         self.correct = False
@@ -247,6 +260,6 @@ class QuizzPage(Page):
 
 
 if __name__ == "__main__": #name always == main so, its essentially a constant true variable
-    Running = LoginPage() #initualising the Quizzpage as an object
+    Running = HomePage() #initualising the Quizzpage as an object
     Running.run() #then running the run method through that so that the program pops up when your run the python file
     
