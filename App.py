@@ -18,6 +18,8 @@ for name, category, image_location in fruits_and_vegetables: #Loop through the l
         category_to_items[category] = []
     category_to_items[category].append((name, image_location))  #Append the current item's name and image location to the list for its category
 
+temp = ['yex67']
+
 class Page:
     def __init__(self, master=None, use_frame=True):
         if master is None:
@@ -160,14 +162,29 @@ class RegisterPage(Page):
                     file.write(f'{self.NameTextbox.get()}\n') #When writing to a file the DLL os doesn't allow for commas, in how i would usually do it. So I am using fstrings
                     file.write(self.hashed_password.decode('utf-8'))
                     self.show_page(LoginPage)
+                temp.append(self.PasswordTextBox.get()) #temporary apppend to be used in the homepage
 
 class HomePage(Page):
-    def __init__(self, use_frame=False):
-        super().__init__()
+    def __init__(self):
+        super().__init__(use_frame=False)
 
+        self.MainFrame = customtkinter.CTkFrame(master=self.app, width=550, height= 450)
+        self.NameFrame = customtkinter.CTkFrame(master=self.app, width=550, height=100)
+        self.NameLabel = customtkinter.CTkLabel(master=self.NameFrame,
+                                                text=f'Welcome, {temp[0]}',
+                                                font=('Avenir', 30))
+        self.FVTestButton = customtkinter.CTkButton(master=self.MainFrame,
+                                                    width=500,
+                                                    height=50,
+                                                    text='Take your test',
+                                                    font=('Avenir', 20),
+                                                    command=lambda: self.show_page(QuizzPage))
         
-        self.MainFrame = customtkinter.CTkFrame(master=self.app)
-        self.MainFrame.pack(pady=20, padx=60, expand=True, fill='both')
+        self.NameFrame.place(x=25, y=25)
+        self.NameLabel.place(x=25,y=25)
+        self.MainFrame.place(x=25, y=140)
+
+        self.FVTestButton.place(x=25, y=375)
 
 
 class QuizzPage(Page):
@@ -182,10 +199,10 @@ class QuizzPage(Page):
         self.QuizzFrame = customtkinter.CTkFrame(self.app, fg_color='white') #defining the frame
         self.ImageFrame = customtkinter.CTkFrame(self.app, fg_color='white')
             
-        self.surveybutton1 = customtkinter.CTkButton(master=self.QuizzFrame, text='', command=lambda: self.ListeningIfCorrect(self.surveybutton1)) #setting this up so the paramater (clicked button works)
-        self.surveybutton2 = customtkinter.CTkButton(master=self.QuizzFrame, text='', command=lambda: self.ListeningIfCorrect(self.surveybutton2)) #setting as lambda, so the function wont initiate untill the button is pressed
-        self.surveybutton3 = customtkinter.CTkButton(master=self.QuizzFrame, text='', command=lambda: self.ListeningIfCorrect(self.surveybutton3))
-        self.surveybutton4 = customtkinter.CTkButton(master=self.QuizzFrame, text='', command=lambda: self.ListeningIfCorrect(self.surveybutton4))
+        self.surveybutton1 = customtkinter.CTkButton(master=self.QuizzFrame, text='', width=275, height=50, command=lambda: self.ListeningIfCorrect(self.surveybutton1)) #setting this up so the paramater (clicked button works)
+        self.surveybutton2 = customtkinter.CTkButton(master=self.QuizzFrame, text='', width=275, height=50, command=lambda: self.ListeningIfCorrect(self.surveybutton2)) #setting as lambda, so the function wont initiate untill the button is pressed
+        self.surveybutton3 = customtkinter.CTkButton(master=self.QuizzFrame, text='', width=275, height=50, command=lambda: self.ListeningIfCorrect(self.surveybutton3))
+        self.surveybutton4 = customtkinter.CTkButton(master=self.QuizzFrame, text='', width=275, height=50, command=lambda: self.ListeningIfCorrect(self.surveybutton4))
         
 
         #intialising the frames
@@ -220,7 +237,9 @@ class QuizzPage(Page):
 
 
     def ListeningIfCorrect(self, clicked_button):
-        
+
+
+        writing = False
         self.correct = False #orgininally starts off as false
 
         if clicked_button._text == self.CorrectAnswer: #checking if the answer is right, a bit buggy for some reason it doesnt detect the paramater
@@ -231,6 +250,10 @@ class QuizzPage(Page):
         else:
             clicked_button.configure(text='✖') #informs the user if the answer is wrong, and makes them continue untill it is correct
             clicked_button.configure(fg_color='#800020', hover_color='#800020')
+            while writing == False:
+                with open(f'user_data/{temp[0]}.txt', 'a') as file: #appending, not writing. 
+                    file.write(f'{self.CorrectAnswer}\n') #saving the wrong answers to aid in the algorithim. 
+                    writing = True
     
      
     def UpdateQuestions(self):
@@ -260,6 +283,6 @@ class QuizzPage(Page):
 
 
 if __name__ == "__main__": #name always == main so, its essentially a constant true variable
-    Running = HomePage() #initualising the Quizzpage as an object
+    Running = QuizzPage() #initualising the Quizzpage as an object
     Running.run() #then running the run method through that so that the program pops up when your run the python file
     
