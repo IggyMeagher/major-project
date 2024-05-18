@@ -19,7 +19,6 @@ for name, category, image_location in fruits_and_vegetables: #Loop through the l
     category_to_items[category].append((name, image_location))  #Append the current item's name and image location to the list for its category
 
 
-
 class Page():
     def __init__(self, use_frame=True):
         self.app = customtkinter.CTk() #this is the app
@@ -45,15 +44,15 @@ class LoginPage(Page):
     def __init__(self):
         super().__init__()
 
-        self.Label = customtkinter.CTkLabel(self.frame, text="HFM Learning", font=('inter', 20))
         self.UsernameTextbox = customtkinter.CTkEntry(self.frame, placeholder_text='Username')
         self.PasswordTextbox = customtkinter.CTkEntry(self.frame, placeholder_text='Password', show = "•") #hiding the inputs
         #self.SignUpLabel = customtkinter.CTkLabel(master=self.frame, text='Dont have an account? Sign up here!', font=('inter', 10), text_color='green')
         self.Button1 = customtkinter.CTkButton(self.frame, text='')
-
+        self.logo = customtkinter.CTkImage(light_image=Image.open('images/logo.png'), size=(275, 200))
+        self.Label = customtkinter.CTkLabel(self.frame, text='', image=self.logo)
         #login button
 
-        self.LoginButton = customtkinter.CTkButton(self.frame, text='login', command= lambda: self.CheckingDataBase())
+        self.LoginButton = customtkinter.CTkButton(self.frame, text='login', command= lambda: self.CheckPW())
         #making a button look like a label so people can press it
         self.SignUpLabel = customtkinter.CTkButton(self.frame, text='Dont have an account? Sign up here!', 
                                            font=('inter', 10), 
@@ -62,12 +61,28 @@ class LoginPage(Page):
                                            hover_color='white', # background color on hover
                                            border_width=0, # no border
                                            corner_radius=0) # no rounded corners to mimic a label
+        self.Label.pack(pady = 50, padx = 6)
+        self.UsernameTextbox.pack(pady = 10, padx = 0)
+        self.PasswordTextbox.pack(pady = 10, padx = 0)
+        self.LoginButton.pack(pady = 10, padx = 10)
+        self.SignUpLabel.pack(padx = 10, pady = 1)
+
+    def CheckPW(self):
+
+        with open(f'user_data/{self.UsernameTextbox.get()}.txt', 'r') as file: #using fstring because it only takes 2 positional args
+            file_lines = file.readlines()
+        if not os.path.exists(f'user_data/{self.UsernameTextbox.get()}.txt'):
+            print("get out")
         
-        self.UsernameTextbox.grid(row = 7, column = 6, pady = 1, padx = 10)
-        self.PasswordTextbox.grid(row = 8, column = 6, pady = 1, padx = 10)
-        self.LoginButton.grid(row = 9, column = 6, pady = 1, padx = 10)
-        self.SignUpLabel.grid(row = 10, column = 6, padx = 10, pady = 1)
-        self.Label.grid(row = 4, column = 6)
+        login_password = self.PasswordTextbox.get().encode('utf-8')
+        stored_hashed_password = file_lines[1].strip().encode('utf-8')
+
+        if bcrypt.checkpw(login_password, stored_hashed_password):
+            print('welcome')
+        else:
+            print('get out')
+
+
                 
 
 
@@ -76,23 +91,24 @@ class RegisterPage(Page):
         super().__init__()
 
         self.TitleLabel = customtkinter.CTkLabel(self.frame, text='HFM Learning Registration', font=('inter', 20)) #just all the widjets being intialised, not really anything special
-        self.NameTextbox = customtkinter.CTkEntry(self.frame, placeholder_text="Enter full name")
+        self.NameTextbox = customtkinter.CTkEntry(self.frame, placeholder_text="Enter username")
         self.PasswordTextBox = customtkinter.CTkEntry(self.frame, placeholder_text='Enter password', show='•')
         self.ConfirmPasswordTextBox = customtkinter.CTkEntry(self.frame, placeholder_text='Confirm Password', show='•')
         self.NoticeLabel = customtkinter.CTkLabel(self.frame, text='', font=('inter', 12))
         self.Progressbar = customtkinter.CTkProgressBar(self.frame)
         self.RegisterButton = customtkinter.CTkButton(self.frame, text='Register', command= lambda: self.RetrieveUserData()) #lambda is needed in order to delay the exectution untill a button press
+        self.Backbutton = customtkinter.CTkButton(master=self.frame, text='✖', width=30, height=30 )
 
+        self.Backbutton.place(x=425,y=20)
+        self.TitleLabel.pack(padx = 0, pady = 100)
+        self.NameTextbox.pack(padx = 0, pady = 10)
+        self.PasswordTextBox.pack(padx = 0, pady = 10)
+        self.ConfirmPasswordTextBox.pack(padx = 0, pady = 10)
+        self.RegisterButton.pack(padx = 0, pady = 10)
+        self.Progressbar.pack(padx = 0, pady = 10)
+        self.NoticeLabel.pack(padx = 0, pady = 10)
 
-        self.TitleLabel.grid(row = 3, column = 6) #placing the widjets on a grid that is defined within the page class
-        self.NameTextbox.grid(row = 5, column = 6)
-        self.PasswordTextBox.grid(row = 6, column = 6)
-        self.ConfirmPasswordTextBox.grid(row = 7, column = 6)
-        self.RegisterButton.grid(row = 8, column = 6)
-        self.Progressbar.grid(row = 9, column = 6)
-        self.NoticeLabel.grid(row = 10, column = 6)
-
-        self.PasswordTextBox.bind("<KeyRelease>", self.PasswordStrengthChecker) #setting it to when a key is
+        self.PasswordTextBox.bind("<KeyRelease>", self.PasswordStrengthChecker()) #setting it to when a key is
 
         self.Progressbar.set(0)
 
@@ -128,8 +144,18 @@ class RegisterPage(Page):
                 self.hashed_password = bcrypt.hashpw(self.password, bcrypt.gensalt())  #encryption through the bcrypt API
                 directory = 'user_data'
                 with open(os.path.join(directory, f"{self.NameTextbox.get()}.txt"), 'w') as file: #'w' means write
-                    file.write(self.NameTextbox) #When writing to a file the DLL os doesn't allow for commas, in how i would usually do it. So I am using fstrings
-                    file.write(self.hashed_password)
+                    file.write(f'{self.NameTextbox.get()}\n') #When writing to a file the DLL os doesn't allow for commas, in how i would usually do it. So I am using fstrings
+                    file.write(self.hashed_password.decode('utf-8'))
+
+class HomePage(Page):
+    def __init__(self, use_frame=False):
+        super().__init__(use_frame)
+
+        self.app = customtkinter.CTk(fg_color='#90EE90')
+        self.MainFrame = customtkinter.CTkFrame(master=self.app, fg_color='white')
+
+        self.MainFrame.pack(pady=20, padx=60, expand=True, fill='both')
+
 
 class QuizzPage(Page):
     def __init__(self):
@@ -195,28 +221,32 @@ class QuizzPage(Page):
     
      
     def UpdateQuestions(self):
+            
+            if self.score ==20:
+                exit()
 
-        selected_items = self.select_random_category_items() #selecting a new set of items from the random catagory
-        self.CumulatedNums = [item[0] for item in selected_items] #using a for loop, to place items in cumulated nums
-        self.CorrectAnswer = self.CumulatedNums[randint(0, 3)] #randomly selecting one of them to be the answer
+            selected_items = self.select_random_category_items() #selecting a new set of items from the random catagory
+            self.CumulatedNums = [item[0] for item in selected_items] #using a for loop, to place items in cumulated nums
+            self.CorrectAnswer = self.CumulatedNums[randint(0, 3)] #randomly selecting one of them to be the answer
 
-        image_location = [item[1] for item in selected_items if item[0] == self.CorrectAnswer][0] #Finding the image location of the correct answer and updates the image displayed in the quiz
-        self.RefImage = customtkinter.CTkImage(light_image=Image.open(image_location), size=(250, 250)) #defining the referance image after this, however the label above is used to grid it.
-        self.ImageLabel.configure(image=self.RefImage) #as you can see, it is being used in unicen.
+            
+            image_location = [item[1] for item in selected_items if item[0] == self.CorrectAnswer][0] #Finding the image location of the correct answer and updates the image displayed in the quiz
+            self.RefImage = customtkinter.CTkImage(light_image=Image.open(image_location), size=(250, 250)) #defining the referance image after this, however the label above is used to grid it.
+            self.ImageLabel.configure(image=self.RefImage) #as you can see, it is being used in unicen.
 
-        #Updating the text on the quiz buttons with the new set of items
-        self.surveybutton1.configure(text=self.CumulatedNums[0], fg_color='#2cc984', hover_color='#09955b')
-        self.surveybutton2.configure(text=self.CumulatedNums[1], fg_color='#2cc984', hover_color='#09955b')
-        self.surveybutton3.configure(text=self.CumulatedNums[2], fg_color='#2cc984', hover_color='#09955b')
-        self.surveybutton4.configure(text=self.CumulatedNums[3], fg_color='#2cc984', hover_color='#09955b')
-        
-        # Print out the correct answer for debugging purposes
-        print(self.CorrectAnswer)
+            #Updating the text on the quiz buttons with the new set of items
+            self.surveybutton1.configure(text=self.CumulatedNums[0], fg_color='#2cc984', hover_color='#09955b')
+            self.surveybutton2.configure(text=self.CumulatedNums[1], fg_color='#2cc984', hover_color='#09955b')
+            self.surveybutton3.configure(text=self.CumulatedNums[2], fg_color='#2cc984', hover_color='#09955b')
+            self.surveybutton4.configure(text=self.CumulatedNums[3], fg_color='#2cc984', hover_color='#09955b')
+            
+            # Print out the correct answer for debugging purposes
+            print(self.CorrectAnswer)
 
 
 
 
 if __name__ == "__main__": #name always == main so, its essentially a constant true variable
-    Running = QuizzPage() #initualising the Quizzpage as an object
+    Running = LoginPage() #initualising the Quizzpage as an object
     Running.run() #then running the run method through that so that the program pops up when your run the python file
     
