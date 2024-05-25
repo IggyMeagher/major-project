@@ -1,4 +1,3 @@
-
 import customtkinter
 from random import randint, sample
 from PIL import Image
@@ -6,6 +5,7 @@ import os
 import re
 import bcrypt
 import pandas as pd
+import csv
 
 df = pd.read_csv('FruitsAndVegetables.csv', encoding='utf-8-sig')#Reading the CSV file into a DataFrame using pandas, i am unsure of how this works fully.
 
@@ -17,6 +17,11 @@ for name, category, image_location in fruits_and_vegetables: #Loop through the l
     if category not in category_to_items: #If the category is not already a key in the dictionary, add it with an empty list as its value
         category_to_items[category] = []
     category_to_items[category].append((name, image_location))  #Append the current item's name and image location to the list for its category
+
+score = 0
+
+UserDataFile = open('user_data.csv', 'a', newline='') #opening another csv file to be apended  into
+writer = csv.writer(UserDataFile) #writer.write() will be the way to weite
 
 temp = ['yex67']
 
@@ -95,7 +100,7 @@ class LoginPage(Page):
         stored_hashed_password = file_lines[1].strip().encode('utf-8')
 
         if bcrypt.checkpw(login_password, stored_hashed_password):
-            self.show_page(QuizzPage)
+            self.show_page(HomePage)
             
 
 class RegisterPage(Page):
@@ -110,17 +115,21 @@ class RegisterPage(Page):
         self.Progressbar = customtkinter.CTkProgressBar(self.frame)
         self.RegisterButton = customtkinter.CTkButton(self.frame, text='Register', command= lambda: self.RetrieveUserData()) #lambda is needed in order to delay the exectution untill a button press
         self.Backbutton = customtkinter.CTkButton(master=self.frame, text='✖', width=30, height=30, command=self.Exit)
+        self.IncorrectLabel = customtkinter.CTkLabel(master=self.frame, text='')
 
-        self.Backbutton.place(x=425,y=20)
-        self.TitleLabel.pack(padx = 0, pady = 100)
-        self.NameTextbox.pack(padx = 0, pady = 10)
-        self.PasswordTextBox.pack(padx = 0, pady = 10)
-        self.ConfirmPasswordTextBox.pack(padx = 0, pady = 10)
-        self.RegisterButton.pack(padx = 0, pady = 10)
-        self.Progressbar.pack(padx = 0, pady = 10)
-        self.NoticeLabel.pack(padx = 0, pady = 10)
+        self.Backbutton.place(x=425,y=20) #button for exiting the pogram
 
-        self.PasswordTextBox.bind("<KeyRelease>", self.PasswordStrengthChecker()) #setting it to when a key is
+        self.TitleLabel.pack(padx = 0, pady = 100) #states the title of the program
+
+        self.NameTextbox.pack(padx = 0, pady = 10) #where you enter your username
+        self.PasswordTextBox.pack(padx = 0, pady = 10) #where you enter your password
+        self.ConfirmPasswordTextBox.pack(padx = 0, pady = 10) #confirm password
+
+        self.RegisterButton.pack(padx = 0, pady = 10) #registration button
+        self.Progressbar.pack(padx = 0, pady = 10) #password strength bar
+        self.NoticeLabel.pack(padx = 0, pady = 10) #tells you if your password is bad.
+
+        self.PasswordTextBox.bind("<KeyRelease>", self.PasswordStrengthChecker) #setting it to when a key is
 
         self.Progressbar.set(0)
 
@@ -151,24 +160,23 @@ class RegisterPage(Page):
             
     
     def RetrieveUserData(self):  
-
-            if self.PasswordTextBox.get() != self.ConfirmPasswordTextBox.get() and len(self.NameTextbox.get()) <3 and len(self.PasswordTextBox) <3:
-                print("passwords need to match")
-            else:    
-                self.password = self.PasswordTextBox.get().encode('utf-8')  # Encode the password to bytes
-                self.hashed_password = bcrypt.hashpw(self.password, bcrypt.gensalt())  #encryption through the bcrypt API
-                directory = 'user_data'
-                with open(os.path.join(directory, f"{self.NameTextbox.get()}.txt"), 'w') as file: #'w' means write
-                    file.write(f'{self.NameTextbox.get()}\n') #When writing to a file the DLL os doesn't allow for commas, in how i would usually do it. So I am using fstrings
-                    file.write(self.hashed_password.decode('utf-8'))
-                    self.show_page(LoginPage)
-                temp.append(self.PasswordTextBox.get()) #temporary apppend to be used in the homepage
-
+        self.length = False
+        if self.PasswordTextBox.get() != self.ConfirmPasswordTextBox.get():
+            self.NoticeLabel.configure(text="The password has to be the same in both feilds")
+            self.length = True
+        else:
+            self.length = False
+        if self.length == False and self.PasswordTextBox <3:\
+            self.NoticeLabel.configure(text="Password length must be greater than 3")
+        else:    
+            self.password = self.PasswordTextBox.get().encode('utf-8')  # Encode the password to bytes
+            self.hashed_password = bcrypt.hashpw(self.password, bcrypt.gensalt())  #encryption through the bcrypt API
+            writer.writerow(self.NameTextbox.get(), self.hashed_password)
 class HomePage(Page):
-    def __init__(self):
-        super().__init__(use_frame=False)
+    def __init__(self, master=None):
+        super().__init__(master, use_frame=False)
 
-        self.MainFrame = customtkinter.CTkFrame(master=self.app, width=550, height= 450)
+        self.MainFrame = customtkinter.CTkFrame(master=self.app, width=550, height=450)
         self.NameFrame = customtkinter.CTkFrame(master=self.app, width=550, height=100)
         self.NameLabel = customtkinter.CTkLabel(master=self.NameFrame,
                                                 text=f'Welcome, {temp[0]}',
@@ -180,11 +188,32 @@ class HomePage(Page):
                                                     font=('Avenir', 20),
                                                     command=lambda: self.show_page(QuizzPage))
         
-        self.NameFrame.place(x=25, y=25)
+        self.NameFrame.pack(padx=25, pady=10)
         self.NameLabel.place(x=25,y=25)
-        self.MainFrame.place(x=25, y=140)
+        self.MainFrame.pack(padx=25, pady=10)
 
         self.FVTestButton.place(x=25, y=375)
+
+        if score >0:
+            self.show_popup()
+
+    def show_popup(self):
+        popup = customtkinter.CTkToplevel(self.app, fg_color='white')
+        popup.geometry("300x200")
+        popup.title("Test Completed")
+
+        popupframe = customtkinter.CTkFrame(master=popup, width=300, height=200, fg_color='white')
+        popupframe.pack(padx=0, pady=30)
+
+        ScoreLabel = customtkinter.CTkLabel(master=popupframe, text=f'Score: {score}/20', font=('inter', 20))
+        ScoreLabel.pack(pady=20, padx=20)
+
+        OkayButton = customtkinter.CTkButton(master=popupframe, 
+                                             text='Okay', 
+                                             font=('inter',11),
+                                             command=lambda: popup.destroy())
+        OkayButton.pack(pady=20, padx=20, fill='x')
+
 
 
 class QuizzPage(Page):
@@ -239,27 +268,22 @@ class QuizzPage(Page):
     def ListeningIfCorrect(self, clicked_button):
 
 
-        writing = False
         self.correct = False #orgininally starts off as false
 
         if clicked_button._text == self.CorrectAnswer: #checking if the answer is right, a bit buggy for some reason it doesnt detect the paramater
                 self.correct = True #if the correct label is correct
-                self.score = self.score +1 #changes the score accordingly
+                score = score +1 #changes the score accordingly
                 self.UpdateQuestions() #gives the user new questions
                 self.AnsweredQuestions.append(self.CorrectAnswer)
         else:
             clicked_button.configure(text='✖') #informs the user if the answer is wrong, and makes them continue untill it is correct
             clicked_button.configure(fg_color='#800020', hover_color='#800020')
-            while writing == False:
-                with open(f'user_data/{temp[0]}.txt', 'a') as file: #appending, not writing. 
-                    file.write(f'{self.CorrectAnswer}\n') #saving the wrong answers to aid in the algorithim. 
-                    writing = True
-    
+            user_file_path = f'user_data/{temp[0]}.txt'
+            self.AnsweredQuestions.append(self.CorrectAnswer)
+
      
     def UpdateQuestions(self):
-            
-            if self.score ==20:
-                exit()
+        
 
             selected_items = self.select_random_category_items() #selecting a new set of items from the random catagory
             self.CumulatedNums = [item[0] for item in selected_items] #using a for loop, to place items in cumulated nums
@@ -278,11 +302,15 @@ class QuizzPage(Page):
             
             # Print out the correct answer for debugging purposes
             print(self.CorrectAnswer)
+            print(score)
+
+            if score ==20:
+                self.show_page(HomePage)
 
 
 
 
 if __name__ == "__main__": #name always == main so, its essentially a constant true variable
-    Running = QuizzPage() #initualising the Quizzpage as an object
+    Running = LoginPage() #initualising the Quizzpage as an object
     Running.run() #then running the run method through that so that the program pops up when your run the python file
     
