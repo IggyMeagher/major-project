@@ -20,8 +20,6 @@ for name, category, image_location in fruits_and_vegetables: #Loop through the l
 
 score = 0
 
-UserDataFile = open('user_data.csv', 'a', newline='') #opening another csv file to be apended  into
-writer = csv.writer(UserDataFile) #writer.write() will be the way to weite
 
 temp = ['yex67']
 
@@ -91,12 +89,13 @@ class LoginPage(Page):
 
     def CheckPW(self):
 
-        with open(f'user_data/{self.UsernameTextbox.get()}.txt', 'r') as file: #using fstring because it only takes 2 positional args
+        with open(f'user_data.csv.txt', 'r') as file: #using fstring because it only takes 2 positional args
             file_lines = file.readlines()
-        if not os.path.exists(f'user_data/{self.UsernameTextbox.get()}.txt'):
-            print("get out")
-        
+
         login_password = self.PasswordTextbox.get().encode('utf-8')
+
+        if self.UsernameTextbox.get() in file:
+            
         stored_hashed_password = file_lines[1].strip().encode('utf-8')
 
         if bcrypt.checkpw(login_password, stored_hashed_password):
@@ -111,7 +110,7 @@ class RegisterPage(Page):
         self.NameTextbox = customtkinter.CTkEntry(self.frame, placeholder_text="Enter username")
         self.PasswordTextBox = customtkinter.CTkEntry(self.frame, placeholder_text='Enter password', show='•')
         self.ConfirmPasswordTextBox = customtkinter.CTkEntry(self.frame, placeholder_text='Confirm Password', show='•')
-        self.NoticeLabel = customtkinter.CTkLabel(self.frame, text='', font=('inter', 12))
+        self.NoticeLabel = customtkinter.CTkLabel(self.frame, text='', font=('inter', 12), text_color='red')
         self.Progressbar = customtkinter.CTkProgressBar(self.frame)
         self.RegisterButton = customtkinter.CTkButton(self.frame, text='Register', command= lambda: self.RetrieveUserData()) #lambda is needed in order to delay the exectution untill a button press
         self.Backbutton = customtkinter.CTkButton(master=self.frame, text='✖', width=30, height=30, command=self.Exit)
@@ -160,18 +159,28 @@ class RegisterPage(Page):
             
     
     def RetrieveUserData(self):  
-        self.length = False
+        with open('user_data.csv', 'r') as file:
+            reading = file.readlines()
         if self.PasswordTextBox.get() != self.ConfirmPasswordTextBox.get():
             self.NoticeLabel.configure(text="The password has to be the same in both feilds")
-            self.length = True
-        else:
-            self.length = False
-        if self.length == False and self.PasswordTextBox <3:\
-            self.NoticeLabel.configure(text="Password length must be greater than 3")
+        elif len(self.PasswordTextBox.get()) and len(self.PasswordTextBox.get()) <3:
+            self.NoticeLabel.configure(text="Password/Username length must be greater than 3")
+        elif self.NameTextbox.get() in reading:
+            self.NoticeLabel.configure("Name is already taken, please choose another")
         else:    
             self.password = self.PasswordTextBox.get().encode('utf-8')  # Encode the password to bytes
             self.hashed_password = bcrypt.hashpw(self.password, bcrypt.gensalt())  #encryption through the bcrypt API
-            writer.writerow(self.NameTextbox.get(), self.hashed_password)
+            with open('user_data.csv', 'a', newline='') as UserDataFile: #a+ means read and append
+                writer = csv.writer(UserDataFile)
+                UserDataFile.seek(0, 2) #this moves the file pointer to the end of the file
+                if UserDataFile.tell() == 0: #checks if the fole is empty
+                    writer.writerow(['Username', 'HashedPassword']) #writing the data
+                writer.writerow([self.NameTextbox.get(), self.hashed_password.decode('utf-8')])
+                self.NoticeLabel.configure(text="Registration successful!", text_color='black')
+                
+
+                print(UserDataFile)
+            
 class HomePage(Page):
     def __init__(self, master=None):
         super().__init__(master, use_frame=False)
@@ -278,9 +287,7 @@ class QuizzPage(Page):
         else:
             clicked_button.configure(text='✖') #informs the user if the answer is wrong, and makes them continue untill it is correct
             clicked_button.configure(fg_color='#800020', hover_color='#800020')
-            user_file_path = f'user_data/{temp[0]}.txt'
             self.AnsweredQuestions.append(self.CorrectAnswer)
-
      
     def UpdateQuestions(self):
         
@@ -288,7 +295,6 @@ class QuizzPage(Page):
             selected_items = self.select_random_category_items() #selecting a new set of items from the random catagory
             self.CumulatedNums = [item[0] for item in selected_items] #using a for loop, to place items in cumulated nums
             self.CorrectAnswer = self.CumulatedNums[randint(0, 3)] #randomly selecting one of them to be the answer
-
             
             image_location = [item[1] for item in selected_items if item[0] == self.CorrectAnswer][0] #Finding the image location of the correct answer and updates the image displayed in the quiz
             self.RefImage = customtkinter.CTkImage(light_image=Image.open(image_location), size=(250, 250)) #defining the referance image after this, however the label above is used to grid it.
