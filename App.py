@@ -1,7 +1,6 @@
 import customtkinter
 from random import randint, sample
 from PIL import Image
-import os
 import re
 import bcrypt
 import pandas as pd
@@ -88,17 +87,24 @@ class LoginPage(Page):
    
 
     def CheckPW(self):
+        count = 0
 
-        with open(f'user_data.csv.txt', 'r') as file: #using fstring because it only takes 2 positional args
-            file_lines = file.readlines()
-
-        login_password = self.PasswordTextbox.get().encode('utf-8')
-
-        if self.UsernameTextbox.get() in file:
+        with open(f'user_data.csv', 'r') as file: #using fstring because it only takes 2 positional args
+            for line in file:
+                count = count +1
+                common = line.strip() #stripping the lines in order to produce just a singular line instead of the whole file
+                if self.UsernameTextbox.get() in common: #checking if username is evident
+                    print([line])
+                elif self.UsernameTextbox.get() == 'Username': #someone cant force a login using the Username username
+                    pass
             
-        stored_hashed_password = file_lines[1].strip().encode('utf-8')
+        df = pd.read_csv('user_data.csv') #Im skipping the rows in order to just extract the hashed password
 
-        if bcrypt.checkpw(login_password, stored_hashed_password):
+        hashed_password = df.iloc[count -2]['Password']
+        print(hashed_password)
+                    
+            
+        if bcrypt.checkpw(self.UsernameTextbox.get().encode('utf-8'), ): #turning into bytes so comparison is possible
             self.show_page(HomePage)
             
 
@@ -156,17 +162,19 @@ class RegisterPage(Page):
             self.NoticeLabel.configure(text="Password Stregnth Excellent")
 
         self.Progressbar.set(strength / 5.0)  #  the progress bar's range is 0.0 to 1.0
-            
+        
     
     def RetrieveUserData(self):  
-        with open('user_data.csv', 'r') as file:
-            reading = file.readlines()
+        with open('user_data.csv', 'r', newline='') as file:
+            if self.NameTextbox.get() in file:
+                file.readlines()
+                self.NoticeLabel.configure(text='Username already taken, try again')
         if self.PasswordTextBox.get() != self.ConfirmPasswordTextBox.get():
             self.NoticeLabel.configure(text="The password has to be the same in both feilds")
         elif len(self.PasswordTextBox.get()) and len(self.PasswordTextBox.get()) <3:
             self.NoticeLabel.configure(text="Password/Username length must be greater than 3")
-        elif self.NameTextbox.get() in reading:
-            self.NoticeLabel.configure("Name is already taken, please choose another")
+        elif len(self.NameTextbox.get()) > 12:
+            self.NoticeLabel.configure(text="You username must be under 12 characters")
         else:    
             self.password = self.PasswordTextBox.get().encode('utf-8')  # Encode the password to bytes
             self.hashed_password = bcrypt.hashpw(self.password, bcrypt.gensalt())  #encryption through the bcrypt API
@@ -174,7 +182,7 @@ class RegisterPage(Page):
                 writer = csv.writer(UserDataFile)
                 UserDataFile.seek(0, 2) #this moves the file pointer to the end of the file
                 if UserDataFile.tell() == 0: #checks if the fole is empty
-                    writer.writerow(['Username', 'HashedPassword']) #writing the data
+                    writer.writerow('') #writing the data
                 writer.writerow([self.NameTextbox.get(), self.hashed_password.decode('utf-8')])
                 self.NoticeLabel.configure(text="Registration successful!", text_color='black')
                 
