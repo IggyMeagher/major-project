@@ -37,10 +37,10 @@ class Page:
             self.frame.pack(pady=20, padx=60, expand=True, fill='both') #setting the frame. Using pack so it looks nice
 
             for i in range(11): #setting the grid. 
-                self.frame.grid_columnconfigure(i, weight=1)
+                self.frame.grid_columnconfigure(i, weight=1) #setting the grids 11 times
                 self.app.grid_columnconfigure(i, weight=1)
             for i in range(12):
-                self.frame.grid_rowconfigure(i, weight=1)
+                self.frame.grid_rowconfigure(i, weight=1) #same with the rows
                 self.app.grid_rowconfigure(i, weight=1)
         else:
             self.frame = None #useful for apps that do not use frame
@@ -60,6 +60,7 @@ class Page:
 class LoginPage(Page):
     def __init__(self, master=None):
         super().__init__(master)
+
 
         self.UsernameTextbox = customtkinter.CTkEntry(self.frame, placeholder_text='Username')
         self.PasswordTextbox = customtkinter.CTkEntry(self.frame, placeholder_text='Password', show = "•") #hiding the inputs
@@ -87,26 +88,17 @@ class LoginPage(Page):
    
 
     def CheckPW(self):
-        count = 0
+        df = pd.read_csv('user_data.csv') #opening the csv file
+        username = self.UsernameTextbox.get() #getting the input
+        user_row = df[df['Username'] == username] #finding the row with the username in it   
+        if not user_row.empty: #checking if the row has the username in it, or is empty
+            hashed_password = user_row.iloc[0]['Password'].encode('utf-8') #line location
+            input_password = self.PasswordTextbox.get().encode('utf-8') #getting the password input
+            if bcrypt.checkpw(input_password, hashed_password): #decrypting the hashing, and then finding out what it is so we can check it against the criteria
+                self.show_page(HomePage) 
+            else:
+                pass
 
-        with open(f'user_data.csv', 'r') as file: #using fstring because it only takes 2 positional args
-            for line in file:
-                count = count +1
-                common = line.strip() #stripping the lines in order to produce just a singular line instead of the whole file
-                if self.UsernameTextbox.get() in common: #checking if username is evident
-                    print([line])
-                elif self.UsernameTextbox.get() == 'Username': #someone cant force a login using the Username username
-                    pass
-            
-        df = pd.read_csv('user_data.csv') #Im skipping the rows in order to just extract the hashed password
-
-        hashed_password = df.iloc[count -2]['Password']
-        print(hashed_password)
-                    
-            
-        if bcrypt.checkpw(self.UsernameTextbox.get().encode('utf-8'), ): #turning into bytes so comparison is possible
-            self.show_page(HomePage)
-            
 
 class RegisterPage(Page):
     def __init__(self, master=None):
