@@ -5,6 +5,11 @@ import re
 import bcrypt
 import pandas as pd
 import csv
+global score
+score = 0
+
+
+temp = ['yex67']
 
 df = pd.read_csv('FruitsAndVegetables.csv', encoding='utf-8-sig')#Reading the CSV file into a DataFrame using pandas, i am unsure of how this works fully.
 
@@ -17,10 +22,6 @@ for name, category, image_location in fruits_and_vegetables: #Loop through the l
         category_to_items[category] = []
     category_to_items[category].append((name, image_location))  #Append the current item's name and image location to the list for its category
 
-score = 0
-
-
-temp = ['yex67']
 
 class Page:
     def __init__(self, master=None, use_frame=True):
@@ -31,6 +32,7 @@ class Page:
         self.app.geometry('600x600') #setting the geometry
         customtkinter.set_appearance_mode('light') #cool feature of customtkitner, allowing for themes
         customtkinter.set_default_color_theme('green') #chose green as it matches the 'fresh' vibe
+        self.score = 0
 
         if use_frame:
             self.frame = customtkinter.CTkFrame(self.app, fg_color='white') #so, some of pages use the basic frame. Like loginpage and Registerpage. But some dont, like Quizpage. So i needed the ability to opt out.
@@ -54,8 +56,7 @@ class Page:
 
     def show_page(self, page_class): #this destroys eveytihng and shows a different master/page.
         self.destroy_current_page()
-        page_class(master=self.app) #here it is changing the page.
-    
+        page_class(master=self.app) #here it is changing the page.  
 
 class LoginPage(Page):
     def __init__(self, master=None):
@@ -98,7 +99,6 @@ class LoginPage(Page):
                 self.show_page(HomePage) 
             else:
                 pass
-
 
 class RegisterPage(Page):
     def __init__(self, master=None):
@@ -185,53 +185,71 @@ class HomePage(Page):
     def __init__(self, master=None):
         super().__init__(master, use_frame=False)
 
-        self.MainFrame = customtkinter.CTkFrame(master=self.app, width=550, height=450)
-        self.NameFrame = customtkinter.CTkFrame(master=self.app, width=550, height=100)
-        self.NameLabel = customtkinter.CTkLabel(master=self.NameFrame,
+        self.test_completed = False
+
+        self.MainFrame = customtkinter.CTkFrame(master=self.app, width=550, height=450) #the frame where the score information will be
+        self.NameFrame = customtkinter.CTkFrame(master=self.app, width=550, height=100) #the frame where the user is welcomed
+        self.NameLabel = customtkinter.CTkLabel(master=self.NameFrame, #the label which says "welcome, name"
                                                 text=f'Welcome, {temp[0]}',
-                                                font=('Avenir', 30))
-        self.FVTestButton = customtkinter.CTkButton(master=self.MainFrame,
+                                                font=('inter', 30))
+        self.FVTestButton = customtkinter.CTkButton(master=self.MainFrame, #take the test button
                                                     width=500,
                                                     height=50,
                                                     text='Take your test',
-                                                    font=('Avenir', 20),
+                                                    font=('inter', 20),
                                                     command=lambda: self.show_page(QuizzPage))
+        
+        self.showscore = customtkinter.CTkLabel(master=self.MainFrame, #tells the user the score
+                                                text="Your score is ",
+                                                font=('inter', 16))
+        self.score = customtkinter.CTkLabel(master=self.MainFrame, #score
+                                            text=self.score,
+                                            font=('inter', 16))
         
         self.NameFrame.pack(padx=25, pady=10)
         self.NameLabel.place(x=25,y=25)
-        self.MainFrame.pack(padx=25, pady=10)
+        self.MainFrame.pack(pady=10, padx=25, expand=True, fill='both')
 
         self.FVTestButton.place(x=25, y=375)
 
-        if score >0:
-            self.show_popup()
+class SuccessPage(HomePage):
+    def __init__(self, master=None):
+        super().__init__(master)
+        global score
 
-    def show_popup(self):
-        popup = customtkinter.CTkToplevel(self.app, fg_color='white')
-        popup.geometry("300x200")
-        popup.title("Test Completed")
+        self.FVTestButton.place_forget()
 
-        popupframe = customtkinter.CTkFrame(master=popup, width=300, height=200, fg_color='white')
-        popupframe.pack(padx=0, pady=30)
+        self.FVTestButton = customtkinter.CTkButton(master=self.MainFrame, #take the test button
+                                                    width=500,
+                                                    height=50,
+                                                    text='Okay',
+                                                    font=('inter', 20),
+                                                    command=lambda: self.show_page(QuizzPage))
 
-        ScoreLabel = customtkinter.CTkLabel(master=popupframe, text=f'Score: {score}/20', font=('inter', 20))
-        ScoreLabel.pack(pady=20, padx=20)
+        self.showscore = customtkinter.CTkLabel(master=self.MainFrame,
+                                                text=(f'Your score is:'),
+                                                font=('inter', 20))
+        self.scorenumber = customtkinter.CTkLabel(master=self.MainFrame,
+                                                  text=(f'{score}/20'),
+                                                  font=('inter', 100))
+        self.showscore.pack(padx = 25, pady = 30)
+        self.FVTestButton.configure(text='Okay')
+        self.scorenumber.pack(padx=25, pady=15)
 
-        OkayButton = customtkinter.CTkButton(master=popupframe, 
-                                             text='Okay', 
-                                             font=('inter',11),
-                                             command=lambda: popup.destroy())
-        OkayButton.pack(pady=20, padx=20, fill='x')
+        if score <=15:
+            self.scorenumber.configure(text_color='#FFB833')
+        elif score <=14:
+            self.scorenumber.configure(text_color='#800020')
+        else:
+            self.scorenumber.configure(text_color='green')
 
 
-
+    
 class QuizzPage(Page):
     def __init__(self, master=None):
         super().__init__(master, use_frame=False)
 
-
         self.correct = False
-        self.score = 0
         self.AnsweredQuestions = []
 
         self.QuizzFrame = customtkinter.CTkFrame(self.app, fg_color='white') #defining the frame
@@ -276,8 +294,8 @@ class QuizzPage(Page):
 
     def ListeningIfCorrect(self, clicked_button):
 
-
         self.correct = False #orgininally starts off as false
+        global score
 
         if clicked_button._text == self.CorrectAnswer: #checking if the answer is right, a bit buggy for some reason it doesnt detect the paramater
                 self.correct = True #if the correct label is correct
@@ -290,7 +308,6 @@ class QuizzPage(Page):
             self.AnsweredQuestions.append(self.CorrectAnswer)
      
     def UpdateQuestions(self):
-        
 
             selected_items = self.select_random_category_items() #selecting a new set of items from the random catagory
             self.CumulatedNums = [item[0] for item in selected_items] #using a for loop, to place items in cumulated nums
@@ -307,11 +324,10 @@ class QuizzPage(Page):
             self.surveybutton4.configure(text=self.CumulatedNums[3], fg_color='#2cc984', hover_color='#09955b')
             
             # Print out the correct answer for debugging purposes
-            print(self.CorrectAnswer)
-            print(score)
 
-            if score ==20:
-                self.show_page(HomePage)
+            if score == 20:
+                self.show_page(SuccessPage)
+                self.testcompleted = True
 
 
 
