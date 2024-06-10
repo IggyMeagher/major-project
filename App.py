@@ -8,8 +8,7 @@ import csv
 
 global score
 score = 0
-
-temp = ['yex67']
+question_count = 0
 
 df = pd.read_csv('FruitsAndVegetables.csv', encoding='utf-8-sig') # Reading the CSV file into a DataFrame using pandas, i am unsure of how this works fully.
 
@@ -213,6 +212,9 @@ class SuccessPage(HomePage):
     def __init__(self, master=None):
         super().__init__(master)
         global score
+        
+        self.question_count = 0
+        self.attempts = 0
 
         self.FVTestButton.place_forget()
 
@@ -245,6 +247,8 @@ class QuizPage(Page):
     def __init__(self, master=None):
         super().__init__(master, use_frame=False)
 
+        self.attempts = 0
+        self.question_count = 0
         self.correct = False
         self.AnsweredQuestions = []
 
@@ -285,16 +289,19 @@ class QuizPage(Page):
     def ListeningIfCorrect(self, clicked_button):
         self.correct = False
         global score
-
-        if clicked_button.cget("text") == self.CorrectAnswer: #finding the text, and checking if it is correct
+        global question_count
+        if clicked_button._text == self.CorrectAnswer:
+            if self.attempts == 0:  # Increment score only if this is the first attempt and correct
+                score = score +1
             self.correct = True
-            score += 1 #updating the score if correct
+            self.question_count += 1
+            self.attempts = 0  # Reset attempts for the next question
             self.UpdateQuestions()
-            self.AnsweredQuestions.append(self.CorrectAnswer)
         else:
+            self.attempts += 1
             clicked_button.configure(text='✖')
             clicked_button.configure(fg_color='#800020', hover_color='#800020')
-            self.AnsweredQuestions.append(self.CorrectAnswer)
+       
 
     def UpdateQuestions(self):
         selectedItems = self.SelectRandomCategoryItems() #calling the random item from csv
@@ -310,11 +317,11 @@ class QuizPage(Page):
         self.SurveyButton3.configure(text=self.CumulatedNums[2], fg_color='#2cc984', hover_color='#09955b')
         self.SurveyButton4.configure(text=self.CumulatedNums[3], fg_color='#2cc984', hover_color='#09955b')
 
-        if score == 20:
+        if self.question_count == 20:
             self.ShowPage(SuccessPage)
             self.testcompleted = True #changing page once test is completed
 
 
 if __name__ == "__main__": #name always == main so, its essentially a constant true variable
-    Running = LoginPage() #initualising the Quizzpage as an object
+    Running = QuizPage() #initualising the Quizzpage as an object
     Running.Run() #then running the run method through that so that the program pops up when your run the python file
