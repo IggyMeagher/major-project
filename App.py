@@ -21,6 +21,8 @@ for name, category, imageLocation in fruits_and_vegetables: # Loop through the l
         categoryToItems[category] = []
     categoryToItems[category].append((name, imageLocation)) # Append the current item's name and image location to the list for its category
 
+TempDataStr = []
+TempDataInt =[]
 
 class Page:
     def __init__(self, master=None, use_frame=True):
@@ -90,10 +92,21 @@ class LoginPage(Page):
         username = self.UsernameTextbox.get() #getting the input
         user_row = df[df['Username'] == username] #finding the row with the username in it   
         if not user_row.empty: #checking if the row has the username in it, or is empty
+
             hashed_password = user_row.iloc[0]['Password'].encode('utf-8') #line location
+
             input_password = self.PasswordTextbox.get().encode('utf-8') #getting the password input
+
             if bcrypt.checkpw(input_password, hashed_password): #decrypting the hashing, and then finding out what it is so we can check it against the criteria
-                self.ShowPage(HomePage) 
+                TempDataStr.append(username)
+                with open('user_data.csv', 'r') as readingfile:  #This loops through the usernames
+                    reader = csv.DictReader(readingfile)
+                    for index, row in enumerate(reader): #enumerate keeps track of the index and the actual value, in this case string.
+                        if row['Username'] == username: 
+                            line_num = index +2 #csv files start at -1 because of the headers
+                            TempDataInt.append(line_num) #appending to use later
+                            self.ShowPage(HomePage)
+            
             else:
                 pass
 
@@ -160,12 +173,13 @@ class RegisterPage(Page):
         if self.PasswordTextBox.get() != self.ConfirmPasswordTextBox.get():
             self.NoticeLabel.configure(text="The password has to be the same in both fields")
         elif len(self.PasswordTextBox.get()) < 3 or len(self.NameTextbox.get()) < 3:
-            self.NoticeLabel.configure(text="Password/Username length must be greater than 3")
+            self.NoticeLabel.configure(text="Password/Username length must be greater than 3") 
         elif len(self.NameTextbox.get()) > 12:
-            self.NoticeLabel.configure(text="Your username must be under 12 characters")
+            self.NoticeLabel.configure(text="Your username must be under 12 characters") #all of the above code is just limiting user inputs to remove potential error
         else:    
             self.password = self.PasswordTextBox.get().encode('utf-8')  # Encode the password to bytes
             self.hashed_password = bcrypt.hashpw(self.password, bcrypt.gensalt())  #encryption through the bcrypt API
+
             with open('user_data.csv', 'a', newline='') as UserDataFile: #a+ means read and append
                 writer = csv.writer(UserDataFile)
                 UserDataFile.seek(0, 2) #this moves the file pointer to the end of the file
@@ -173,20 +187,17 @@ class RegisterPage(Page):
                     writer.writerow('') #writing the data
                 writer.writerow([self.NameTextbox.get(), self.hashed_password.decode('utf-8')])
                 self.NoticeLabel.configure(text="Registration successful!", text_color='black')
-                
-
-                print(UserDataFile)
             
 class HomePage(Page):
     def __init__(self, master=None):
         super().__init__(master, use_frame=False)
-
         self.test_completed = False
+
 
         self.MainFrame = customtkinter.CTkFrame(master=self.app, width=550, height=450) #the frame where the score information will be
         self.NameFrame = customtkinter.CTkFrame(master=self.app, width=550, height=100) #the frame where the user is welcomed
         self.NameLabel = customtkinter.CTkLabel(master=self.NameFrame, #the label which says "welcome, name"
-                                                text=f'Welcome, {temp[0]}',
+                                                text=(f'Welcome, {TempDataStr[0]}'),
                                                 font=('inter', 30))
         self.FVTestButton = customtkinter.CTkButton(master=self.MainFrame, #take the test button
                                                     width=500,
@@ -208,6 +219,7 @@ class HomePage(Page):
 
         self.FVTestButton.place(x=25, y=375)
 
+
 class SuccessPage(HomePage):
     def __init__(self, master=None):
         super().__init__(master)
@@ -218,12 +230,14 @@ class SuccessPage(HomePage):
 
         self.FVTestButton.place_forget()
 
-        self.FVTestButton = customtkinter.CTkButton(master=self.MainFrame, #take the test button
+        
+
+        self.FVTestButton1 = customtkinter.CTkButton(master=self.MainFrame, #take the test button
                                                     width=500,
                                                     height=50,
                                                     text='Okay',
                                                     font=('inter', 20),
-                                                    command=lambda: self.ShowPage(QuizPage))
+                                                    command=lambda: self.ShowPage(HomePage))
 
         self.ShowScore = customtkinter.CTkLabel(master=self.MainFrame,
                                                 text=(f'Your score is:'),
@@ -234,6 +248,7 @@ class SuccessPage(HomePage):
         self.ShowScore.pack(padx=25, pady=30)
         self.FVTestButton.configure(text='Okay')
         self.ScoreNumber.pack(padx=25, pady=15)
+        self.FVTestButton1.place(x=25, y=375)
 
         if score <= 15:
             self.ScoreNumber.configure(text_color='#FFB833')
@@ -242,6 +257,34 @@ class SuccessPage(HomePage):
         else:
             self.ScoreNumber.configure(text_color='green')
 
+    def AddingTheScores(self):
+        with open('user_data.csv', 'r') as file: #reading the csv
+            reader = csv.reader(file)
+            lines = list(reader)
+
+        # Retrieve the line number and username
+        line_num = TempDataInt[0]
+        username = TempDataStr[0]
+        new_test_result = str(score)  # Use the actual score
+
+        # Update the specific row and column
+        header = lines[0]
+
+        # Find the next available TestResult column
+        for i in range(2, len(header)):
+            if lines[TempDataInt[0]][i] == "":
+                lines[TempDataInt[0]][i] = new_test_result
+                break
+        else:
+            # If all current columns are filled, add a new test result column
+            lines[line_num].append(new_test_result)
+            header.append(f"TestResult{len(header) - 1}")
+
+        # Write the updated CSV data back to the file
+        with open('user_data.csv', 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(lines)
+            
 
 class QuizPage(Page):
     def __init__(self, master=None):
@@ -323,5 +366,5 @@ class QuizPage(Page):
 
 
 if __name__ == "__main__": #name always == main so, its essentially a constant true variable
-    Running = QuizPage() #initualising the Quizzpage as an object
+    Running = LoginPage() #initualising the Quizzpage as an object
     Running.Run() #then running the run method through that so that the program pops up when your run the python file
