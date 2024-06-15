@@ -6,7 +6,6 @@ import bcrypt
 import pandas as pd
 import csv
 
-global score
 score = 0
 question_count = 0
 
@@ -21,8 +20,8 @@ for name, category, imageLocation in fruits_and_vegetables: # Loop through the l
         categoryToItems[category] = []
     categoryToItems[category].append((name, imageLocation)) # Append the current item's name and image location to the list for its category
 
+TempData = []
 TempDataStr = []
-TempDataInt =[]
 
 class Page:
     def __init__(self, master=None, use_frame=True):
@@ -104,7 +103,7 @@ class LoginPage(Page):
                     for index, row in enumerate(reader): #enumerate keeps track of the index and the actual value, in this case string.
                         if row['Username'] == username: 
                             line_num = index +2 #csv files start at -1 because of the headers
-                            TempDataInt.append(line_num) #appending to use later
+                            TempData.append(line_num) #appending to use later
                             self.ShowPage(HomePage)
             
             else:
@@ -237,7 +236,7 @@ class SuccessPage(HomePage):
                                                     height=50,
                                                     text='Okay',
                                                     font=('inter', 20),
-                                                    command=lambda: self.ShowPage(HomePage))
+                                                    command=lambda: self.append_to_specific_line('scores.txt', TempData[0], str(f'{score},'))())
 
         self.ShowScore = customtkinter.CTkLabel(master=self.MainFrame,
                                                 text=(f'Your score is:'),
@@ -256,42 +255,28 @@ class SuccessPage(HomePage):
             self.ScoreNumber.configure(text_color='#800020')
         else:
             self.ScoreNumber.configure(text_color='green')
+        
+    
 
-    def AddingTheScores(self):
-        with open('user_data.csv', 'r') as file: #reading the csv
-            reader = csv.reader(file)
-            lines = list(reader)
+    def append_to_specific_line(self, filename, line_number, additional_content):
+        with open(filename, 'r') as file: #reading file
+            lines = file.readlines()
+        while len(lines) < line_number: #checking if adquate line num
+            lines.append('\n') #if not doing so
+        lines[line_number - 1] = lines[line_number - 1].strip() + additional_content + '\n'
+        with open(filename, 'w') as file: 
+            file.writelines(lines) #writing
 
-        # Retrieve the line number and username
-        line_num = TempDataInt[0]
-        username = TempDataStr[0]
-        new_test_result = str(score)  # Use the actual score
 
-        # Update the specific row and column
-        header = lines[0]
 
-        # Find the next available TestResult column
-        for i in range(2, len(header)):
-            if lines[TempDataInt[0]][i] == "":
-                lines[TempDataInt[0]][i] = new_test_result
-                break
-        else:
-            # If all current columns are filled, add a new test result column
-            lines[line_num].append(new_test_result)
-            header.append(f"TestResult{len(header) - 1}")
-
-        # Write the updated CSV data back to the file
-        with open('user_data.csv', 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerows(lines)
             
+        
 
 class QuizPage(Page):
     def __init__(self, master=None):
         super().__init__(master, use_frame=False)
-
+        global question_count
         self.attempts = 0
-        self.question_count = 0
         self.correct = False
         self.AnsweredQuestions = []
 
@@ -337,7 +322,7 @@ class QuizPage(Page):
             if self.attempts == 0:  # Increment score only if this is the first attempt and correct
                 score = score +1
             self.correct = True
-            self.question_count += 1
+            question_count += 1
             self.attempts = 0  # Reset attempts for the next question
             self.UpdateQuestions()
         else:
@@ -347,6 +332,7 @@ class QuizPage(Page):
        
 
     def UpdateQuestions(self):
+        global question_count
         selectedItems = self.SelectRandomCategoryItems() #calling the random item from csv
         self.CumulatedNums = [item[0] for item in selectedItems]
         self.CorrectAnswer = self.CumulatedNums[randint(0, 3)] #firns the correctanswer
@@ -359,10 +345,9 @@ class QuizPage(Page):
         self.SurveyButton2.configure(text=self.CumulatedNums[1], fg_color='#2cc984', hover_color='#09955b')
         self.SurveyButton3.configure(text=self.CumulatedNums[2], fg_color='#2cc984', hover_color='#09955b')
         self.SurveyButton4.configure(text=self.CumulatedNums[3], fg_color='#2cc984', hover_color='#09955b')
-
-        if self.question_count == 20:
+        if question_count == 5:
             self.ShowPage(SuccessPage)
-            self.testcompleted = True #changing page once test is completed
+
 
 
 if __name__ == "__main__": #name always == main so, its essentially a constant true variable
