@@ -1,49 +1,34 @@
+import pandas as pd
 import csv
 
-TempDataInt = []
+def process_csv(input_file, output_file):
+    # Load the CSV file into a DataFrame
+    df = pd.read_csv(input_file, encoding='utf-8-sig')
+    print("CSV file loaded successfully.")
 
-def loop_through_usernames(username):
-    global TempDataInt
-    with open('user_data.csv', 'r', newline='') as readingfile:
-        reader = csv.DictReader(readingfile)
-        for row in reader:
-            if row['Username'].strip() == username.strip():
-                TempDataInt.append(row)  # Append the entire row for later use
-                break  # Stop the loop once the username is found
+    # Check the first few rows to ensure the data is loaded correctly
+    print("First few rows of the DataFrame:")
+    print(df.head())
 
-def CheckingScores():
-    global TempDataInt
-    if not TempDataInt:
-        print("No matching row found to update")
-        return
+    # Group by category and filter out categories with fewer than 4 items
+    category_counts = df['Category'].value_counts()
+    print("Category counts:")
+    print(category_counts)
 
-    row = TempDataInt[0]  # Get the row for the username
-    if not row['TestResult1'].strip():  # Check if TestResult1 is empty
-        row['TestResult1'] = '11'  # Update the value if empty
-    
-    write_updated_data(row)
+    categories_to_move = category_counts[category_counts < 4].index
+    print("Categories to move to 'Miscellaneous':")
+    print(categories_to_move)
 
-def write_updated_data(updated_row):
-    rows = []
-    fieldnames = None
+    # Move items from categories with fewer than 4 items to 'Miscellaneous'
+    df['Category'] = df['Category'].apply(lambda x: 'Miscellaneous' if x in categories_to_move else x)
 
-    # Read the current data and collect rows
-    with open('user_data.csv', 'r', newline='') as file:
-        reader = csv.DictReader(file)
-        fieldnames = reader.fieldnames
-        for row in reader:
-            if row['Username'].strip() == updated_row['Username'].strip():
-                rows.append(updated_row)  # Append the updated row
-            else:
-                rows.append(row)  # Append unchanged rows
+    # Save the updated DataFrame back to a CSV file
+    df.to_csv(output_file, index=False, encoding='utf-8-sig')
+    print(f"Updated CSV file saved as {output_file}")
 
-    # Write the updated data back to the file
-    with open('user_data.csv', 'w', newline='') as file:
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(rows)
+# File paths
+input_file = 'FruitsAndVegetables.csv'
+output_file = 'FruitsAndVegetables_Updated.csv'
 
-# Example usage:
-username = 'Ignatius'
-loop_through_usernames(username)
-CheckingScores()
+# Process the CSV file
+process_csv(input_file, output_file)

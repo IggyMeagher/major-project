@@ -8,6 +8,7 @@ import csv
 
 score = 0
 question_count = 0
+admin = False
 
 df = pd.read_csv('FruitsAndVegetables.csv', encoding='utf-8-sig') # Reading the CSV file into a DataFrame using pandas, i am unsure of how this works fully.
 
@@ -105,6 +106,8 @@ class LoginPage(Page):
                             line_num = index +2 #csv files start at -1 because of the headers
                             TempData.append(line_num) #appending to use later
                             self.ShowPage(HomePage)
+
+                            
             
             else:
                 pass
@@ -192,7 +195,6 @@ class HomePage(Page):
         super().__init__(master, use_frame=False)
         self.test_completed = False
 
-
         self.MainFrame = customtkinter.CTkFrame(master=self.app, width=550, height=450) #the frame where the score information will be
         self.NameFrame = customtkinter.CTkFrame(master=self.app, width=550, height=100) #the frame where the user is welcomed
         self.NameLabel = customtkinter.CTkLabel(master=self.NameFrame, #the label which says "welcome, name"
@@ -211,14 +213,40 @@ class HomePage(Page):
         self.ScoreLabel = customtkinter.CTkLabel(master=self.MainFrame, #score
                                                  text=self.score,
                                                  font=('inter', 16))
+        self.ShowAScore = customtkinter.CTkLabel(master=self.MainFrame,
+                                                text=(f'Your average scores are:'),
+                                                font=('inter', 20))
+        self.AScoreNumber = customtkinter.CTkLabel(master=self.MainFrame,
+                                                  text=f'{self.calculate_average(TempData[0])}/20', #what it returns is the average, with tempdata[0] being the line num
+                                                  font=('inter', 100))
         
         self.NameFrame.pack(padx=25, pady=10)
         self.NameLabel.place(x=25, y=25)
         self.MainFrame.pack(pady=10, padx=25, expand=True, fill='both')
 
         self.FVTestButton.place(x=25, y=375)
+        self.ShowAScore.pack(padx=25, pady=30)
+        self.AScoreNumber.pack(padx=25, pady=15)
 
-
+    def calculate_average(self, line_number):
+        global score
+        global question_count
+        question_count = 0
+        with open('scores.txt', 'r') as file:
+            lines = file.readlines()   
+        # Ensure the requested line number exists in the file
+        if line_number - 1 < len(lines):
+            line = lines[line_number - 1].strip()  # Get the specific line and strip any trailing whitespace
+        else:
+            return None  # Return None if the line number exceeds the total number of lines
+        values = line.split(',') #splitting
+        values = [value for value in values if value] #filter out all commas
+        numbers = [int(value) for value in values] #converting the strings to integers
+        average = sum(numbers) / len(numbers) if numbers else 0
+        if len(numbers) > 5:
+            return int(average)
+        
+    
 class SuccessPage(HomePage):
     def __init__(self, master=None):
         super().__init__(master)
@@ -236,7 +264,7 @@ class SuccessPage(HomePage):
                                                     height=50,
                                                     text='Okay',
                                                     font=('inter', 20),
-                                                    command=lambda: self.append_to_specific_line('scores.txt', TempData[0], str(f'{score},'))())
+                                                    command=lambda: self.append_to_specific_line('scores.txt', TempData[0], str(f'{score},')))
 
         self.ShowScore = customtkinter.CTkLabel(master=self.MainFrame,
                                                 text=(f'Your score is:'),
@@ -248,6 +276,8 @@ class SuccessPage(HomePage):
         self.FVTestButton.configure(text='Okay')
         self.ScoreNumber.pack(padx=25, pady=15)
         self.FVTestButton1.place(x=25, y=375)
+        self.AScoreNumber.pack_forget()
+        self.ShowAScore.pack_forget()
 
         if score <= 15:
             self.ScoreNumber.configure(text_color='#FFB833')
@@ -263,9 +293,10 @@ class SuccessPage(HomePage):
             lines = file.readlines()
         while len(lines) < line_number: #checking if adquate line num
             lines.append('\n') #if not doing so
-        lines[line_number - 1] = lines[line_number - 1].strip() + additional_content + '\n'
+        lines[line_number - 1] = lines[line_number - 1].strip() + additional_content + '\n' #-1 because txt file do this, removing content and adding scores
         with open(filename, 'w') as file: 
             file.writelines(lines) #writing
+        self.ShowPage(HomePage)
 
 
 
@@ -318,6 +349,8 @@ class QuizPage(Page):
         self.correct = False
         global score
         global question_count
+        if question_count == 0:
+            score = 0
         if clicked_button._text == self.CorrectAnswer:
             if self.attempts == 0:  # Increment score only if this is the first attempt and correct
                 score = score +1
@@ -345,8 +378,10 @@ class QuizPage(Page):
         self.SurveyButton2.configure(text=self.CumulatedNums[1], fg_color='#2cc984', hover_color='#09955b')
         self.SurveyButton3.configure(text=self.CumulatedNums[2], fg_color='#2cc984', hover_color='#09955b')
         self.SurveyButton4.configure(text=self.CumulatedNums[3], fg_color='#2cc984', hover_color='#09955b')
+        print(question_count)
         if question_count == 5:
             self.ShowPage(SuccessPage)
+
 
 
 
