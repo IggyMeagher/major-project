@@ -23,6 +23,7 @@ for name, category, imageLocation in fruits_and_vegetables: # Loop through the l
 
 TempData = []
 TempDataStr = []
+Admin = []
 
 class Page:
     def __init__(self, master=None, use_frame=True):
@@ -106,8 +107,11 @@ class LoginPage(Page):
                             line_num = index +2 #csv files start at -1 because of the headers
                             TempData.append(line_num) #appending to use later
                             self.ShowPage(HomePage)
+                            if row['Username'] ==username and row["Admin"] == 'True': #checking if admin
+                                self.ShowPage(AdmimHomePage)
 
-                            
+                                
+                        
             
             else:
                 pass
@@ -244,9 +248,16 @@ class HomePage(Page):
         numbers = [int(value) for value in values] #converting the strings to integers
         average = sum(numbers) / len(numbers) if numbers else 0
         if len(numbers) > 5:
-            return int(average)
+            average = int(average)
+        self.update_user_average_score(TempDataStr[0], average)
+
+        return average
         
-    
+    def update_user_average_score(self, username, average_score): #reads the csv file, locates the username and Averagescore col and records it
+        df = pd.read_csv('user_data.csv')
+        df.loc[df['Username'] == username, 'AverageScore'] = average_score
+        df.to_csv('user_data.csv', index=False)
+
 class SuccessPage(HomePage):
     def __init__(self, master=None):
         super().__init__(master)
@@ -286,8 +297,6 @@ class SuccessPage(HomePage):
         else:
             self.ScoreNumber.configure(text_color='green')
         
-    
-
     def append_to_specific_line(self, filename, line_number, additional_content):
         with open(filename, 'r') as file: #reading file
             lines = file.readlines()
@@ -297,11 +306,6 @@ class SuccessPage(HomePage):
         with open(filename, 'w') as file: 
             file.writelines(lines) #writing
         self.ShowPage(HomePage)
-
-
-
-            
-        
 
 class QuizPage(Page):
     def __init__(self, master=None):
@@ -379,10 +383,42 @@ class QuizPage(Page):
         self.SurveyButton3.configure(text=self.CumulatedNums[2], fg_color='#2cc984', hover_color='#09955b')
         self.SurveyButton4.configure(text=self.CumulatedNums[3], fg_color='#2cc984', hover_color='#09955b')
         print(question_count)
-        if question_count == 5:
+        if question_count == 20:
             self.ShowPage(SuccessPage)
 
+class AdmimHomePage(HomePage):
+    def __init__(self, master=None):
+        super().__init__(master)
 
+        self.AdminButton = customtkinter.CTkButton(master=self.MainFrame, text='Manager Menu', command=lambda: self.ShowPage(ManagerPage))
+        self.AdminButton.pack(padx = 0, pady = 95)
+
+class ManagerPage(Page):
+    def __init__(self, master=None, use_frame=True):
+        super().__init__(master, use_frame)
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.TitleLabel = customtkinter.CTkLabel(self.frame, text="User List", font=('inter', 20))
+        self.TitleLabel.grid(row=0, column=0, pady=10, padx=10)
+
+        self.scrollable_frame = customtkinter.CTkScrollableFrame(self.frame, width=500, height=400)
+        self.scrollable_frame.grid(row=1, column=0, pady=10, padx=10)
+
+        self.load_user_data()
+
+    def load_user_data(self):
+        count = 0
+        df = pd.read_csv('user_data.csv') # Read the CSV file
+        for i in range(len(df) -2):
+            i = i+1
+        average = df.iloc=[i][3]
+        print(average)
+
+        for i, username in enumerate(df['Username']):
+            user_label = customtkinter.CTkLabel(self.scrollable_frame, text=username, font=('inter', 16))
+            user_label.grid(row=i, column=0, pady=5, padx=5)
+        
 
 
 if __name__ == "__main__": #name always == main so, its essentially a constant true variable
