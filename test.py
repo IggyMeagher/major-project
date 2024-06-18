@@ -1,34 +1,73 @@
 import pandas as pd
-import csv
+import customtkinter as ctk
+from tkinter import ttk
 
-def process_csv(input_file, output_file):
-    # Load the CSV file into a DataFrame
-    df = pd.read_csv(input_file, encoding='utf-8-sig')
-    print("CSV file loaded successfully.")
+class TableApp:
+    def __init__(self, root):
+        self.root = root
+        self.df = pd.read_csv('user_data.csv')
+        
+        # Create a CTkFrame for the Treeview
+        self.tree_frame = ctk.CTkFrame(self.root)
+        self.tree_frame.pack(pady=20, padx=20, fill="both", expand=True)
+        
+        # Create the Treeview
+        self.tree = ttk.Treeview(self.tree_frame, columns=("Username", "AverageScore", "PreviousAverage", "PercentageIncrease"), show="headings")
+        
+        # Define the headings
+        self.tree.heading("Username", text="Username")
+        self.tree.heading("AverageScore", text="Average Score")
+        self.tree.heading("PreviousAverage", text="Previous Average")
+        self.tree.heading("PercentageIncrease", text="Percentage Increase")
+        
+        # Define the column widths
+        self.tree.column("Username", width=150)
+        self.tree.column("AverageScore", width=100)
+        self.tree.column("PreviousAverage", width=100)
+        self.tree.column("PercentageIncrease", width=150)
+        
+        # Create a scrollbar
+        self.scrollbar = ctk.CTkScrollbar(self.tree_frame, orientation="vertical", command=self.tree.yview)
+        self.tree.configure(yscrollcommand=self.scrollbar.set)
+        
+        # Pack the Treeview and scrollbar
+        self.tree.pack(side="left", fill="both", expand=True)
+        self.scrollbar.pack(side="right", fill="y")
+        
+        # Load data into the table
+        self.load_user_data()
 
-    # Check the first few rows to ensure the data is loaded correctly
-    print("First few rows of the DataFrame:")
-    print(df.head())
+    def load_user_data(self):
+        # Check if 'PreviousAverage' column exists
+        if 'PreviousAverage' not in self.df.columns:
+            self.df['PreviousAverage'] = [0] * len(self.df)  # Initialize with zeros if it doesn't exist
 
-    # Group by category and filter out categories with fewer than 4 items
-    category_counts = df['Category'].value_counts()
-    print("Category counts:")
-    print(category_counts)
+        for i in range(len(self.df)):
+            score = self.df.iloc[i]['AverageScore']
+            previous_score = self.df.iloc[i]['PreviousAverage']
+            if pd.notna(score):
+                score = float(score)
+            else:
+                score = 0
+            
+            if pd.notna(previous_score):
+                previous_score = float(previous_score)
+            else:
+                previous_score = 0
+            
+            if previous_score != 0:
+                percentage_increase = ((score - previous_score) / previous_score) * 100
+            else:
+                percentage_increase = 0  # Handle division by zero
+            
+            self.tree.insert("", "end", values=(
+                self.df.iloc[i]['Username'],
+                score,
+                previous_score,
+                f"{percentage_increase:.2f}%"
+            ))
 
-    categories_to_move = category_counts[category_counts < 4].index
-    print("Categories to move to 'Miscellaneous':")
-    print(categories_to_move)
-
-    # Move items from categories with fewer than 4 items to 'Miscellaneous'
-    df['Category'] = df['Category'].apply(lambda x: 'Miscellaneous' if x in categories_to_move else x)
-
-    # Save the updated DataFrame back to a CSV file
-    df.to_csv(output_file, index=False, encoding='utf-8-sig')
-    print(f"Updated CSV file saved as {output_file}")
-
-# File paths
-input_file = 'FruitsAndVegetables.csv'
-output_file = 'FruitsAndVegetables_Updated.csv'
-
-# Process the CSV file
-process_csv(input_file, output_file)
+if __name__ == "__main__":
+    root = ctk.CTk()  # Use customtkinter CTk as the root window
+    app = TableApp(root)
+    root.mainloop()

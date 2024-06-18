@@ -1,6 +1,7 @@
 import customtkinter
 from random import randint, sample
 from PIL import Image
+from tkinter import ttk
 import re
 import bcrypt
 import pandas as pd
@@ -88,30 +89,31 @@ class LoginPage(Page):
         self.SignUpLabel.pack(padx=10, pady=1)
    
 
-    def CheckPW(self):
-        df = pd.read_csv('user_data.csv') #opening the csv file
-        username = self.UsernameTextbox.get() #getting the input
-        user_row = df[df['Username'] == username] #finding the row with the username in it   
-        if not user_row.empty: #checking if the row has the username in it, or is empty
+    def CheckPW(self):    
+        try:
+            df = pd.read_csv('user_data.csv')  # Attempt to open the CSV file
+            print(df.head())  # Print the first few lines of the DataFrame to check the content
+        except Exception as e:
+            print(f"Error reading CSV file: {e}")
+            return
 
-            hashed_password = user_row.iloc[0]['Password'].encode('utf-8') #line location
+        username = self.UsernameTextbox.get()  # Get the input
+        user_row = df[df['Username'] == username]  # Find the row with the username in it
+        if not user_row.empty:  # Check if the row has the username in it, or is empty
+            hashed_password = user_row.iloc[0]['Password'].encode('utf-8')  # Line location
+            input_password = self.PasswordTextbox.get().encode('utf-8')  # Get the password input
 
-            input_password = self.PasswordTextbox.get().encode('utf-8') #getting the password input
-
-            if bcrypt.checkpw(input_password, hashed_password): #decrypting the hashing, and then finding out what it is so we can check it against the criteria
+            if bcrypt.checkpw(input_password, hashed_password):  # Decrypt the hashing and then find out what it is so we can check it against the criteria
                 TempDataStr.append(username)
-                with open('user_data.csv', 'r') as readingfile:  #This loops through the usernames
+                with open('user_data.csv', 'r') as readingfile:  # This loops through the usernames
                     reader = csv.DictReader(readingfile)
-                    for index, row in enumerate(reader): #enumerate keeps track of the index and the actual value, in this case string.
-                        if row['Username'] == username: 
-                            line_num = index +2 #csv files start at -1 because of the headers
-                            TempData.append(line_num) #appending to use later
+                    for index, row in enumerate(reader):  # Enumerate keeps track of the index and the actual value, in this case string.
+                        if row['Username'] == username:
+                            line_num = index + 2  # CSV files start at -1 because of the headers
+                            TempData.append(line_num)  # Appending to use later
                             self.ShowPage(HomePage)
-                            if row['Username'] ==username and row["Admin"] == 'True': #checking if admin
-                                self.ShowPage(AdmimHomePage)
-
-                                
-                        
+                            if row['Username'] == username and row["Admin"] == 'True':  # Checking if admin
+                                self.ShowPage(AdmimHomePage)     
             
             else:
                 pass
@@ -253,9 +255,10 @@ class HomePage(Page):
 
         return average
         
-    def update_user_average_score(self, username, average_score): #reads the csv file, locates the username and Averagescore col and records it
+    def update_user_average_score(self, username, average): #reads the csv file, locates the username and Averagescore col and records it
         df = pd.read_csv('user_data.csv')
-        df.loc[df['Username'] == username, 'AverageScore'] = average_score
+        df.loc[df['Username'] == username, 'AverageScore'] = int(average)
+        df.loc[df['Username'] == username, 'PreviousScore'] = int(score)
         df.to_csv('user_data.csv', index=False)
 
 class SuccessPage(HomePage):
@@ -306,7 +309,9 @@ class SuccessPage(HomePage):
         with open(filename, 'w') as file: 
             file.writelines(lines) #writing
         self.ShowPage(HomePage)
-
+      
+        
+    
 class QuizPage(Page):
     def __init__(self, master=None):
         super().__init__(master, use_frame=False)
@@ -382,7 +387,6 @@ class QuizPage(Page):
         self.SurveyButton2.configure(text=self.CumulatedNums[1], fg_color='#2cc984', hover_color='#09955b')
         self.SurveyButton3.configure(text=self.CumulatedNums[2], fg_color='#2cc984', hover_color='#09955b')
         self.SurveyButton4.configure(text=self.CumulatedNums[3], fg_color='#2cc984', hover_color='#09955b')
-        print(question_count)
         if question_count == 20:
             self.ShowPage(SuccessPage)
 
@@ -394,33 +398,42 @@ class AdmimHomePage(HomePage):
         self.AdminButton.pack(padx = 0, pady = 95)
 
 class ManagerPage(Page):
-    def __init__(self, master=None, use_frame=True):
+    def __init__(self, master=None, use_frame=False):
         super().__init__(master, use_frame)
-        self.create_widgets()
+        self.df = pd.read_csv('user_data.csv')
 
-    def create_widgets(self):
-        self.TitleLabel = customtkinter.CTkLabel(self.frame, text="User List", font=('inter', 20))
-        self.TitleLabel.grid(row=0, column=0, pady=10, padx=10)
-
-        self.scrollable_frame = customtkinter.CTkScrollableFrame(self.frame, width=500, height=400)
-        self.scrollable_frame.grid(row=1, column=0, pady=10, padx=10)
-
+        self.tree_frame = customtkinter.CTkFrame(self.app) 
+        self.tree_frame.pack(pady=20, padx=20, fill="both", expand=True)
+        
+      
+        self.tree = ttk.Treeview(self.tree_frame, columns=("Username", "LastScore", "AverageScore"), show="headings")
+        
+       
+        self.tree.heading("Username", text="Username")
+        self.tree.heading("LastScore", text="Last Score")
+        self.tree.heading("AverageScore", text="Average Score")
+        
+      
+        self.tree.column("Username", width=150)
+        self.tree.column("LastScore", width=100)
+        self.tree.column("AverageScore", width=100)
+        
+     
+        self.scrollbar = ttk.Scrollbar(self.tree_frame, orient="vertical", command=self.tree.yview)
+        self.tree.configure(yscroll=self.scrollbar.set)  
+    
+        self.tree.pack(padx= 0, pady = 100, side="left", fill="both", expand=True)
+        self.scrollbar.pack(pady = 20, side="right", fill="y")
         self.load_user_data()
 
     def load_user_data(self):
-        count = 0
-        df = pd.read_csv('user_data.csv') # Read the CSV file
-        for i in range(len(df) -2):
-            i = i+1
-        average = df.iloc=[i][3]
-        print(average)
-
-        for i, username in enumerate(df['Username']):
-            user_label = customtkinter.CTkLabel(self.scrollable_frame, text=username, font=('inter', 16))
-            user_label.grid(row=i, column=0, pady=5, padx=5)
-        
-
-
+        for i, row in self.df.iterrows():
+            if  row['AverageScore'] <17:
+                username = row['Username']
+                last_score = row['PreviousScore'] if pd.notna(row['PreviousScore']) else 'N/A'
+                average_score = row['AverageScore'] if pd.notna(row['AverageScore']) else 'N/A'
+                self.tree.insert("", "end", values=(username, last_score, average_score))
+    
 if __name__ == "__main__": #name always == main so, its essentially a constant true variable
-    Running = LoginPage() #initualising the Quizzpage as an object
+    Running = ManagerPage() #initualising the Quizzpage as an object
     Running.Run() #then running the run method through that so that the program pops up when your run the python file
