@@ -37,9 +37,8 @@ If you would like to download my application you can downlaod the zip file. You 
 
 2. Once the file is unzipped, make sure everything is there and you can run this in your terminal, only if python is isntalled. 
 
- ```bash
-    python main.py
- ```
+3. You can run the file through the pyhton IDE, navagate to it using the spoltight search on windows of mac. Once it open go to file > open > {filename}. Then in your IDE editor, click run > Runmodule or F5.
+
 
 Now you should be within the app, enjoy. 
 
@@ -49,10 +48,13 @@ Now you should be within the app, enjoy.
 1. **Login Page**: Enter your username and password to log in. If you do not have an account, click the sign-up link to register. If you 
 purpouses, you can use the admin, admin username and password. 
     ![Login Page](images/image1.png)
+
 2. **Home Page**: After logging in, you will see your score and the option to take a test. Click this option, and you will be led into the testing fuction of the application
     ![Home Page](images/image2.png)
+
 3. **Quiz Page**: Answer the quiz questions by selecting the correct option based off of the promt given within this example, it is a corella pear and it is correct!
     ![Quiz Page](images/image3.png)
+
 4. **Manager Page**: Accessible to admin users, this page displays users who need assistance based on their scores. There are some filler users to demonstrate the full functionality of this
 
 ## License Information
@@ -84,11 +86,13 @@ SOFTWARE.
 ## Visuals
 Here are some screenshots of the application:
 1. Login Page:
-    ![Login Page](./path/to/Screenshot%202024-06-26%20at%2010.41.15%20pm.png)
+    ![Login Page](images/Login.png)
 2. Home Page:
-    ![Home Page](./path/to/Screenshot%202024-06-26%20at%2010.43.47%20pm.png)
+    ![Home Page](images/Average.png)
 3. Quiz Page:
-    ![Quiz Page](./path/to/Screenshot%202024-06-26%20at%2010.46.06%20pm.png)
+    ![Quiz Page](images/Quizz.png)
+4. Manager Page:
+    ![MangerPage](images/Manager.png)
 
 ## Acknowledgements
 - CustomTkinter for providing the customizable Tkinter widgets.
@@ -97,6 +101,9 @@ Here are some screenshots of the application:
 - Mr Jeffery and Fong for helping me in the apps creation
 
 ## Author Details
+
+if you have any complaints or issues, or general feedback please email me:
+
 - **Name**: Ignatius Meagher
 - **Contact**: Ignatius.meagher@gmail.com
 
