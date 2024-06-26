@@ -2,10 +2,8 @@ Username,Password,Admin,AverageScore,PreviousScore
 test,test,,,
 Ignatius,$2b$12$bNJQJKLSoe6OOR5puFv0jeAk5IldxAL8nWfu74ufb7PwvDcBy4IUm,False,14.0,
 silvio,$2b$12$VJfOZbCKHfChUih7ApV5mu78ThL0h2DIYnI1.rdVm.BYVM.CL3t0G,False,13.0,
-leo,$2b$12$HrKKqUrnR2RJLU8YmRv8wOKTaf/pIaIngZ5SzlCW6U4UgO7XMvYNS,True,17.0,0.0
-iggy,$2b$12$NoXSyqE6KVEn3.TRigiQguAbIOsbQaENfwO5DDsxgVqm3rqI3TDzi,False,12.0,5.0
-Iggy,$2b$12$F5FJDabIrrjN2evW91L6.eSXJbJCvJCxuH0ZQ.Sg9Nwz8iYi6.cF.,,0.0,0.0
-bueno,$2b$12$hC9WjAiJ1r.AundTaJD/bOSDz.qS7vCrxqYueeBk4/5guvHFJIwPW,11.0,13.0,19.0
-yex67,$2b$12$KWA9hNxRrI5T5hZvV565cOMi20Xr4FQjUoDz/MTpEodSo6dB.SsFW,,,
-bogo,$2b$12$4wfO90P4kRYaB11RqcBmA.BxWWAvtWAQMQn6w2xydQCLm75iDC.Di,,,
-frogo,$2b$12$O8mMsHtY2Ud9Dl5pxxWz6.CqRCBZ8eNA0jhrzIplEC9.Rip1M6I4a,,,
+leo,$2b$12$HrKKqUrnR2RJLU8YmRv8wOKTaf/pIaIngZ5SzlCW6U4UgO7XMvYNS,True,15.0,0.0
+iggy,$2b$12$NoXSyqE6KVEn3.TRigiQguAbIOsbQaENfwO5DDsxgVqm3rqI3TDzi,False,12.0,0.0
+admin,$2b$12$JVFneiacVGk7MbFOvaNQ8eFiJo9i3BRh0k0nPxvJFMVc8FAYJ2.xK,True,6.0,0.0
+bob,,False,13.0,12.0
+rob,,False,16.0,11.0

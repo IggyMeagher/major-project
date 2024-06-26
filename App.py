@@ -7,9 +7,9 @@ import bcrypt
 import pandas as pd
 import csv
 
-score = 0
-question_count = 0
-admin = False
+SCORE = 0
+QUESTION_COUNT = 0
+ADMIN = False
 
 df = pd.read_csv('FruitsAndVegetables.csv', encoding='utf-8-sig') # Reading the CSV file into a DataFrame using pandas, i am unsure of how this works fully.
 
@@ -22,9 +22,9 @@ for name, category, imageLocation in fruits_and_vegetables: # Loop through the l
         categoryToItems[category] = []
     categoryToItems[category].append((name, imageLocation)) # Append the current item's name and image location to the list for its category
 
-TempData = []
-TempDataStr = []
-Admin = []
+TEMPDATA = []
+TEMPDATASTR = []
+ADMIN = []
 
 class Page:
     def __init__(self, master=None, use_frame=True):
@@ -51,7 +51,7 @@ class Page:
             self.frame = None #useful for apps that do not use frame
 
     def Run(self):
-        self.app.mainloop() #universal run method. good for debugging so i can skip the login process and needed as well, to run the app.
+        self.app.mainloop()
 
     def DestroyCurrentPage(self): 
         for widget in self.app.winfo_children():
@@ -68,66 +68,58 @@ class LoginPage(Page):
         self.UsernameTextbox = customtkinter.CTkEntry(self.frame, placeholder_text='Username')
         self.PasswordTextbox = customtkinter.CTkEntry(self.frame, placeholder_text='Password', show="•") #hiding the inputs
         self.Button1 = customtkinter.CTkButton(self.frame, text='')
-        self.logo = customtkinter.CTkImage(light_image=Image.open('images/logo.png'), size=(275, 200))
-        self.Label = customtkinter.CTkLabel(self.frame, text='', image=self.logo)
-        #login button
+        self.Logo = customtkinter.CTkImage(light_image=Image.open('images/logo.png'), size=(275, 200))
+        self.Label = customtkinter.CTkLabel(self.frame, text='', image=self.Logo)
+       
 
         self.LoginButton = customtkinter.CTkButton(self.frame, text='login', command=lambda: self.CheckPW())
         #making a button look like a label so people can press it
         self.SignUpLabel = customtkinter.CTkButton(self.frame, text='Dont have an account? Sign up here!', 
                                                    font=('inter', 10), 
                                                    text_color='black', 
-                                                   fg_color='white', # background color of the button it blends in, used eyedropper tool on google
-                                                   hover_color='white', # background color on hover
-                                                   border_width=0, # no border
+                                                   fg_color='white', #background color of the button it blends in, used eyedropper tool on google
+                                                   hover_color='white', #background color on hover
+                                                   border_width=0, #no border
                                                    corner_radius=0,
-                                                   command=lambda: self.ShowPage(RegisterPage)) # no rounded corners to mimic a label
+                                                   command=lambda: self.ShowPage(RegisterPage)) #no rounded corners to mimic a label
         self.Label.pack(pady=50, padx=6)
         self.UsernameTextbox.pack(pady=10, padx=0)
         self.PasswordTextbox.pack(pady=10, padx=0)
         self.LoginButton.pack(pady=10, padx=10)
         self.SignUpLabel.pack(padx=10, pady=1)
    
-
     def CheckPW(self):    
-        try:
-            df = pd.read_csv('user_data.csv')  # Attempt to open the CSV file
-            print(df.head())  # Print the first few lines of the DataFrame to check the content
-        except Exception as e:
-            print(f"Error reading CSV file: {e}")
-            return
+        df = pd.read_csv('user_data.csv') #Attempt to open the CSV file
 
-        username = self.UsernameTextbox.get()  # Get the input
-        user_row = df[df['Username'] == username]  # Find the row with the username in it
-        if not user_row.empty:  # Check if the row has the username in it, or is empty
-            hashed_password = user_row.iloc[0]['Password'].encode('utf-8')  # Line location
-            input_password = self.PasswordTextbox.get().encode('utf-8')  # Get the password input
+        Username = self.UsernameTextbox.get()  #Get the input
+        UserRow = df[df['Username'] == Username]  #Find the row with the username in it
+        if not UserRow.empty:  #Check if the row has the username in it, or is empty
+            HashedPassword = UserRow.iloc[0]['Password'].encode('utf-8')  #Line location
+            InputPassword = self.PasswordTextbox.get().encode('utf-8')  #Get the password input
 
-            if bcrypt.checkpw(input_password, hashed_password):  # Decrypt the hashing and then find out what it is so we can check it against the criteria
-                TempDataStr.append(username)
-                with open('user_data.csv', 'r') as readingfile:  # This loops through the usernames
+            if bcrypt.checkpw(InputPassword, HashedPassword):  #Decrypt the hashing and then find out what it is so we can check it against the criteria
+                TEMPDATASTR.append(Username)
+                with open('user_data.csv', 'r') as readingfile:  #This loops through the usernames
                     reader = csv.DictReader(readingfile)
-                    for index, row in enumerate(reader):  # Enumerate keeps track of the index and the actual value, in this case string.
-                        if row['Username'] == username:
-                            line_num = index + 2  # CSV files start at -1 because of the headers
-                            TempData.append(line_num)  # Appending to use later
+                    for index, row in enumerate(reader):  #Enumerate keeps track of the index and the actual value, in this case string.
+                        if row['Username'] == Username:
+                            line_num = index + 2  #CSV files start at -1 because of the headers
+                            TEMPDATA.append(line_num)  #Appending to use later
                             self.ShowPage(HomePage)
-                            if row['Username'] == username and row["Admin"] == 'True':  # Checking if admin
+                            if row['Username'] == Username and row["Admin"] == 'True':  #Checking if admin
                                 self.ShowPage(AdmimHomePage)     
             
             else:
                 pass
 
-class RegisterPage(Page):
+class RegisterPage(Page): #registration page, shown through button on login page
     def __init__(self, master=None):
         super().__init__(master)
-
         self.TitleLabel = customtkinter.CTkLabel(self.frame, text='HFM Learning Registration', font=('inter', 20)) #just all the widjets being intialised, not really anything special
         self.NameTextbox = customtkinter.CTkEntry(self.frame, placeholder_text="Enter username")
         self.PasswordTextBox = customtkinter.CTkEntry(self.frame, placeholder_text='Enter password', show='•')
         self.ConfirmPasswordTextBox = customtkinter.CTkEntry(self.frame, placeholder_text='Confirm Password', show='•')
         self.NoticeLabel = customtkinter.CTkLabel(self.frame, text='', font=('inter', 12), text_color='red')
-        self.Progressbar = customtkinter.CTkProgressBar(self.frame)
         self.RegisterButton = customtkinter.CTkButton(self.frame, text='Register', command=lambda: self.RetrieveUserData()) #lambda is needed in order to delay the exectution untill a button press
         self.BackButton = customtkinter.CTkButton(master=self.frame, text='✖', width=30, height=30, command=self.Exit)
         self.IncorrectLabel = customtkinter.CTkLabel(master=self.frame, text='')
@@ -141,37 +133,11 @@ class RegisterPage(Page):
         self.ConfirmPasswordTextBox.pack(padx=0, pady=10) #confirm password
 
         self.RegisterButton.pack(padx=0, pady=10) #registration button
-        self.Progressbar.pack(padx=0, pady=10) #password strength bar
         self.NoticeLabel.pack(padx=0, pady=10) #tells you if your password is bad.
-
-        self.PasswordTextBox.bind("<KeyRelease>", self.PasswordStrengthChecker) #setting it to when a key is
-
-        self.Progressbar.set(0)
 
     def Exit(self):
         self.ShowPage(LoginPage)
 
-    def PasswordStrengthChecker(self):
-        password = self.PasswordTextBox.get() #getting the password input
-        strength = 0
-        if re.search(r'[A-Z]', password): #searching for uppercase characters within the textbox
-            strength += 1  
-        if re.search(r'[a-z]', password): #same here but for lowercase
-            strength += 1   
-        if re.search(r'[0-9]', password): #same here but nums
-            strength += 1  
-        if re.search(r'[\W_]', password): #and special characters
-            strength += 1  
-        if len(password) >= 8:
-            strength += 1            
-        if strength <= 1:
-            self.NoticeLabel.configure(text="Password Strength low") #strength is the strength of the password, hence <1 would bew low
-        elif strength < 4:
-            self.NoticeLabel.configure(text="Password Strength Moderate")
-        elif strength >= 4:
-            self.NoticeLabel.configure(text="Password Strength Excellent")
-
-        self.Progressbar.set(strength / 5.0)  # the progress bar's range is 0.0 to 1.0
         
     def RetrieveUserData(self):  
         with open('user_data.csv', 'r', newline='') as file:
@@ -188,23 +154,25 @@ class RegisterPage(Page):
             self.password = self.PasswordTextBox.get().encode('utf-8')  # Encode the password to bytes
             self.hashed_password = bcrypt.hashpw(self.password, bcrypt.gensalt())  #encryption through the bcrypt API
 
-            with open('user_data.csv', 'a', newline='') as UserDataFile: #a+ means read and append
+            with open('user_data.csv', 'a', newline='') as UserDataFile: 
                 writer = csv.writer(UserDataFile)
                 UserDataFile.seek(0, 2) #this moves the file pointer to the end of the file
-                if UserDataFile.tell() == 0: #checks if the fole is empty
+                if UserDataFile.tell() == 0: #checks if the file is empty
                     writer.writerow('') #writing the data
                 writer.writerow([self.NameTextbox.get(), self.hashed_password.decode('utf-8')])
                 self.NoticeLabel.configure(text="Registration successful!", text_color='black')
+                self.ShowPage(LoginPage)
             
 class HomePage(Page):
     def __init__(self, master=None):
         super().__init__(master, use_frame=False)
         self.test_completed = False
 
+    
         self.MainFrame = customtkinter.CTkFrame(master=self.app, width=550, height=450) #the frame where the score information will be
         self.NameFrame = customtkinter.CTkFrame(master=self.app, width=550, height=100) #the frame where the user is welcomed
         self.NameLabel = customtkinter.CTkLabel(master=self.NameFrame, #the label which says "welcome, name"
-                                                text=(f'Welcome, {TempDataStr[0]}'),
+                                                text=(f'Welcome, {TEMPDATASTR[0]}'),
                                                 font=('inter', 30))
         self.FVTestButton = customtkinter.CTkButton(master=self.MainFrame, #take the test button
                                                     width=500,
@@ -212,6 +180,9 @@ class HomePage(Page):
                                                     text='Take your test',
                                                     font=('inter', 20),
                                                     command=lambda: self.ShowPage(QuizPage))
+        
+        self.BackButton = customtkinter.CTkButton(master=self.frame, text='✖', width=30, height=30, command=self.Logout)
+        self.BackButton.place(x=525, y=25)
         
         self.ShowScore = customtkinter.CTkLabel(master=self.MainFrame, #tells the user the score
                                                 text="Your score is ",
@@ -223,7 +194,7 @@ class HomePage(Page):
                                                 text=(f'Your average scores are:'),
                                                 font=('inter', 20))
         self.AScoreNumber = customtkinter.CTkLabel(master=self.MainFrame,
-                                                  text=f'{self.calculate_average(TempData[0])}/20', #what it returns is the average, with tempdata[0] being the line num
+                                                  text=f'{self.CalculateAverage(int(TEMPDATA[0]))}/20', #what it returns is the average, with tempdata[0] being the line num
                                                   font=('inter', 100))
         
         self.NameFrame.pack(padx=25, pady=10)
@@ -231,54 +202,59 @@ class HomePage(Page):
         self.MainFrame.pack(pady=10, padx=25, expand=True, fill='both')
 
         self.FVTestButton.place(x=25, y=375)
-        self.ShowAScore.pack(padx=25, pady=30)
-        self.AScoreNumber.pack(padx=25, pady=15)
+        self.ShowAScore.pack(padx=25, pady=30) #label which says 'your average score is:'
+        self.AScoreNumber.pack(padx=25, pady=15) #average score number
 
-    def calculate_average(self, line_number):
+    def Logout(self):
+
+        self.ShowPage(LoginPage)
+        TEMPDATA.clear()
+        TEMPDATASTR.clear()
+
+    def CalculateAverage(self, line_number):
         global score
-        global question_count
-        question_count = 0
+        global QUESTION_COUNT
+        QUESTION_COUNT = 0
         with open('scores.txt', 'r') as file:
             lines = file.readlines()   
-        # Ensure the requested line number exists in the file
+        #Ensure the requested line number exists in the file
         if line_number - 1 < len(lines):
-            line = lines[line_number - 1].strip()  # Get the specific line and strip any trailing whitespace
+            line = lines[line_number - 1].strip()  #Get the specific line and strip any trailing whitespace
         else:
-            return None  # Return None if the line number exceeds the total number of lines
+            return None  #Return None if the line number exceeds the total number of lines
         values = line.split(',') #splitting
         values = [value for value in values if value] #filter out all commas
         numbers = [int(value) for value in values] #converting the strings to integers
         average = sum(numbers) / len(numbers) if numbers else 0
         if len(numbers) > 5:
             average = int(average)
-        self.update_user_average_score(TempDataStr[0], average)
+        self.UpdateUserAverageScore(TEMPDATASTR[0], average)
 
-        return average
+        return int(average)
         
-    def update_user_average_score(self, username, average): #reads the csv file, locates the username and Averagescore col and records it
+    def UpdateUserAverageScore(self, username, average): #reads the csv file, locates the username and Averagescore col and records it
         df = pd.read_csv('user_data.csv')
         df.loc[df['Username'] == username, 'AverageScore'] = int(average)
-        df.loc[df['Username'] == username, 'PreviousScore'] = int(score)
+        df.loc[df['Username'] == username, 'PreviousScore'] = int(SCORE)
         df.to_csv('user_data.csv', index=False)
+
 
 class SuccessPage(HomePage):
     def __init__(self, master=None):
         super().__init__(master)
         global score
         
-        self.question_count = 0
-        self.attempts = 0
+        self.QuestionCount = 0
+        self.Attempts = 0
 
         self.FVTestButton.place_forget()
-
-        
 
         self.FVTestButton1 = customtkinter.CTkButton(master=self.MainFrame, #take the test button
                                                     width=500,
                                                     height=50,
                                                     text='Okay',
                                                     font=('inter', 20),
-                                                    command=lambda: self.append_to_specific_line('scores.txt', TempData[0], str(f'{score},')))
+                                                    command=lambda: self.append_to_specific_line('scores.txt', TEMPDATA[0], str(f'{score},')))
 
         self.ShowScore = customtkinter.CTkLabel(master=self.MainFrame,
                                                 text=(f'Your score is:'),
@@ -294,7 +270,7 @@ class SuccessPage(HomePage):
         self.ShowAScore.pack_forget()
 
         if score <= 15:
-            self.ScoreNumber.configure(text_color='#FFB833')
+            self.ScoreNumber.configure(text_color='#FFB833') #indiacting good or bad score through colour
         elif score <= 14:
             self.ScoreNumber.configure(text_color='#800020')
         else:
@@ -310,12 +286,10 @@ class SuccessPage(HomePage):
             file.writelines(lines) #writing
         self.ShowPage(HomePage)
       
-        
-    
 class QuizPage(Page):
     def __init__(self, master=None):
         super().__init__(master, use_frame=False)
-        global question_count
+        global QUESTION_COUNT
         self.attempts = 0
         self.correct = False
         self.AnsweredQuestions = []
@@ -350,21 +324,24 @@ class QuizPage(Page):
         self.UpdateQuestions() #calling update questions
 
     def SelectRandomCategoryItems(self):
-        category = sample(list(categoryToItems.keys()), 1)[0] #finds the catagory
-        selectedItems = sample(categoryToItems[category], 4) #then from that catagory, it finds the four fruits and veg to be dispalyed
-        return selectedItems #returns it to be used
+        category = sample(list(categoryToItems.keys()), 1)[0]  # finds the category
+        items_in_category = categoryToItems[category]
+        num_items_to_sample = min(4, len(items_in_category))  # Choose 4 or the number of items in the category, whichever is smaller
+        selectedItems = sample(items_in_category, num_items_to_sample)  # Then from that category, it finds the items to be displayed
+        return selectedItems  # returns it to be used
+
 
     def ListeningIfCorrect(self, clicked_button):
         self.correct = False
         global score
-        global question_count
-        if question_count == 0:
+        global QUESTION_COUNT
+        if QUESTION_COUNT == 0:
             score = 0
         if clicked_button._text == self.CorrectAnswer:
             if self.attempts == 0:  # Increment score only if this is the first attempt and correct
                 score = score +1
             self.correct = True
-            question_count += 1
+            QUESTION_COUNT += 1
             self.attempts = 0  # Reset attempts for the next question
             self.UpdateQuestions()
         else:
@@ -374,7 +351,7 @@ class QuizPage(Page):
        
 
     def UpdateQuestions(self):
-        global question_count
+        global QUESTION_COUNT
         selectedItems = self.SelectRandomCategoryItems() #calling the random item from csv
         self.CumulatedNums = [item[0] for item in selectedItems]
         self.CorrectAnswer = self.CumulatedNums[randint(0, 3)] #firns the correctanswer
@@ -387,53 +364,57 @@ class QuizPage(Page):
         self.SurveyButton2.configure(text=self.CumulatedNums[1], fg_color='#2cc984', hover_color='#09955b')
         self.SurveyButton3.configure(text=self.CumulatedNums[2], fg_color='#2cc984', hover_color='#09955b')
         self.SurveyButton4.configure(text=self.CumulatedNums[3], fg_color='#2cc984', hover_color='#09955b')
-        if question_count == 20:
+        if QUESTION_COUNT == 20:
             self.ShowPage(SuccessPage)
 
-class AdmimHomePage(HomePage):
+class AdmimHomePage(HomePage): #child of homepage, only 1 extra button
     def __init__(self, master=None):
         super().__init__(master)
+
+        self.exitbtn = customtkinter.CTkButton(master=self.MainFrame, text='x')
 
         self.AdminButton = customtkinter.CTkButton(master=self.MainFrame, text='Manager Menu', command=lambda: self.ShowPage(ManagerPage))
         self.AdminButton.pack(padx = 0, pady = 95)
 
-class ManagerPage(Page):
+
+class ManagerPage(Page): #manager page where the manager can see where the users got items wrong
     def __init__(self, master=None, use_frame=False):
         super().__init__(master, use_frame)
         self.df = pd.read_csv('user_data.csv')
 
-        self.tree_frame = customtkinter.CTkFrame(self.app) 
-        self.tree_frame.pack(pady=20, padx=20, fill="both", expand=True)
-        
-      
+        self.adminframe = customtkinter.CTkFrame(self.app)
+
+        self.tree_frame = customtkinter.CTkScrollableFrame(self.app, height=450) 
+
+
+        self.tree_frame.pack(pady=5, padx=20, fill="both", expand=True)
+        self.adminframe.pack(padx = 20, pady = 10, fill='both', expand=True)
+
+        self.Label = customtkinter.CTkLabel(self.tree_frame, text="Users who need assistance", font=('inter', 20))
+        self.Label.pack(padx = 10, pady = 10)
+
         self.tree = ttk.Treeview(self.tree_frame, columns=("Username", "LastScore", "AverageScore"), show="headings")
-        
-       
         self.tree.heading("Username", text="Username")
         self.tree.heading("LastScore", text="Last Score")
         self.tree.heading("AverageScore", text="Average Score")
-        
-      
         self.tree.column("Username", width=150)
         self.tree.column("LastScore", width=100)
-        self.tree.column("AverageScore", width=100)
-        
-     
-        self.scrollbar = ttk.Scrollbar(self.tree_frame, orient="vertical", command=self.tree.yview)
-        self.tree.configure(yscroll=self.scrollbar.set)  
+        self.tree.column("AverageScore", width=100) 
+
+        self.commandbutton = customtkinter.CTkButton(master=self.adminframe, text='Exit', command= lambda: self.ShowPage(AdmimHomePage))
+        self.commandbutton.pack(padx = 5, pady = 5, fill = 'both')
     
-        self.tree.pack(padx= 0, pady = 100, side="left", fill="both", expand=True)
-        self.scrollbar.pack(pady = 20, side="right", fill="y")
+        self.tree.pack(padx = 20, pady = 20,  fill='both', expand=True)
         self.load_user_data()
 
     def load_user_data(self):
         for i, row in self.df.iterrows():
-            if  row['AverageScore'] <17:
+            if  row['AverageScore'] <17 or row['PreviousScore'] ==0:
                 username = row['Username']
                 last_score = row['PreviousScore'] if pd.notna(row['PreviousScore']) else 'N/A'
                 average_score = row['AverageScore'] if pd.notna(row['AverageScore']) else 'N/A'
                 self.tree.insert("", "end", values=(username, last_score, average_score))
     
 if __name__ == "__main__": #name always == main so, its essentially a constant true variable
-    Running = ManagerPage() #initualising the Quizzpage as an object
+    Running = LoginPage() #initualising the Quizzpage as an object
     Running.Run() #then running the run method through that so that the program pops up when your run the python file
