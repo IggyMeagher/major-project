@@ -31,7 +31,7 @@ HFM Learning is an educational platform designed to provide interactive quizzes 
 ## How to Use
 1. **Login Page**: Enter your username and password to log in. If you do not have an account, click the sign-up link to register. If you want to use the application for testing
 2. purpouses, you can use the admin, admin username and password. 
-    ![Login Page](./path/to/Screenshot%202024-06-26%20at%2010.41.15%20pm.png)
+    ![Login Page](/Users/iggymeagher/Desktop/SDD Projects/major project/images/DocumentationImages/Screenshot 2024-06-26 at 10.41.15 pm.png)
 3. **Home Page**: After logging in, you will see your score and the option to take a test. Click this option, and you will be led into the testing fuction of the application
     ![Home Page](./path/to/Screenshot%202024-06-26%20at%2010.43.47%20pm.png)
 4. **Quiz Page**: Answer the quiz questions by selecting the correct option based off of the promt given within this example, it is a corella pear and it is correct!
