@@ -3,14 +3,16 @@
 ## Description
 HFM Learning is an educational platform designed to provide interactive quizzes and learning modules for users. The application includes user authentication, personalized score tracking, and a managerial interface for overseeing user performance.
 
-## Installation Instructions
+## Installation Instructions 
 1. **Install Python**:
     - **Windows and Mac**:
       1. Download the Python installer from the [official website](https://www.python.org/downloads/).
       2. Run the installer and ensure you check the box that says "Add Python to PATH".
       3. Follow the installation prompts.
+
+## Terminal install:
   
-2. Clone the repository to your local machine:
+2. Clone the repository to your local machine within your termail:
     ```bash
     git clone https://github.com/yourusername/hfm-learning.git
     ```
@@ -27,16 +29,31 @@ HFM Learning is an educational platform designed to provide interactive quizzes 
     ```bash
     python main.py
     ```
+## Link install: 
+
+If you would like to download my application you can downlaod the zip file. You can download it [here](https://github.com/IggyMeagher/hfm-learning/archive/refs/heads/main.zip).
+
+1. Once you have downloaded this, you can unzip it using winrar, or any other unzipping file. [winrar](https://www.win-rar.com/download.html?&L=0) on MacOs, it comes pre-installed so no need to download winrar or and unzipping for for that matter
+
+2. Once the file is unzipped, make sure everything is there and you can run this in your terminal, only if python is isntalled. 
+
+ ```bash
+    python main.py
+ ```
+
+Now you should be within the app, enjoy. 
+
+
 
 ## How to Use
-1. **Login Page**: Enter your username and password to log in. If you do not have an account, click the sign-up link to register. If you want to use the application for testing
-2. purpouses, you can use the admin, admin username and password. 
+1. **Login Page**: Enter your username and password to log in. If you do not have an account, click the sign-up link to register. If you 
+purpouses, you can use the admin, admin username and password. 
     ![Login Page](images/image1.png)
-3. **Home Page**: After logging in, you will see your score and the option to take a test. Click this option, and you will be led into the testing fuction of the application
+2. **Home Page**: After logging in, you will see your score and the option to take a test. Click this option, and you will be led into the testing fuction of the application
     ![Home Page](images/image2.png)
-4. **Quiz Page**: Answer the quiz questions by selecting the correct option based off of the promt given within this example, it is a corella pear and it is correct!
+3. **Quiz Page**: Answer the quiz questions by selecting the correct option based off of the promt given within this example, it is a corella pear and it is correct!
     ![Quiz Page](images/image3.png)
-5. **Manager Page**: Accessible to admin users, this page displays users who need assistance based on their scores. There are some filler users to demonstrate the full functionality of this
+4. **Manager Page**: Accessible to admin users, this page displays users who need assistance based on their scores. There are some filler users to demonstrate the full functionality of this
 
 ## License Information
 This project is licensed under the MIT License.
