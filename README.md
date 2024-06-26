@@ -31,7 +31,7 @@ HFM Learning is an educational platform designed to provide interactive quizzes 
     ```
 ## Link install: 
 
-If you would like to download my application you can downlaod the zip file. You can download it [here](https://github.com/IggyMeagher/hfm-learning/archive/refs/heads/main.zip).
+If you would like to download my application you can downlaod the zip file. You can download it [here](https://github.com/IggyMeagher/major-project/archive/refs/heads/main.zip).
 
 1. Once you have downloaded this, you can unzip it using winrar, or any other unzipping file. [winrar](https://www.win-rar.com/download.html?&L=0) on MacOs, it comes pre-installed so no need to download winrar or and unzipping for for that matter
 
