@@ -2,7 +2,6 @@ import customtkinter
 from random import randint, sample
 from PIL import Image
 from tkinter import ttk
-import re
 import bcrypt
 import pandas as pd
 import csv
@@ -88,7 +87,7 @@ class LoginPage(Page):
         self.LoginButton.pack(pady=10, padx=10)
         self.SignUpLabel.pack(padx=10, pady=1)
    
-    def CheckPW(self):    
+    def CheckPW(self): #checks the username and passowrd within the data store
         df = pd.read_csv('user_data/user_data.csv') #Attempt to open the CSV file
 
         Username = self.UsernameTextbox.get()  #Get the input
@@ -139,7 +138,7 @@ class RegisterPage(Page): #registration page, shown through button on login page
         self.ShowPage(LoginPage)
 
         
-    def RetrieveUserData(self):  
+    def RetrieveUserData(self): #retrevies the users data and uses it register 
         with open('user_data/user_data.csv', 'r', newline='') as file:
             if self.NameTextbox.get() in file:
                 file.readlines()
@@ -205,7 +204,7 @@ class HomePage(Page):
         self.ShowAScore.pack(padx=25, pady=30) #label which says 'your average score is:'
         self.AScoreNumber.pack(padx=25, pady=15) #average score number
 
-    def Logout(self):
+    def Logout(self): #logout function
 
         self.ShowPage(LoginPage)
         TEMPDATA.clear()
@@ -254,7 +253,7 @@ class SuccessPage(HomePage):
                                                     height=50,
                                                     text='Okay',
                                                     font=('inter', 20),
-                                                    command=lambda: self.append_to_specific_line('user_data/scores.txt', TEMPDATA[0], str(f'{score},')))
+                                                    command=lambda: self.append_to_specific_line('user_data/scores.txt', TEMPDATA[0], str(f'{score},'))) #see here tempdata [0] is the line num
 
         self.ShowScore = customtkinter.CTkLabel(master=self.MainFrame,
                                                 text=(f'Your score is:'),
@@ -276,7 +275,7 @@ class SuccessPage(HomePage):
         else:
             self.ScoreNumber.configure(text_color='green')
         
-    def append_to_specific_line(self, filename, line_number, additional_content):
+    def append_to_specific_line(self, filename, line_number, additional_content): #appands the score to the score.txt
         with open(filename, 'r') as file: #reading file
             lines = file.readlines()
         while len(lines) < line_number: #checking if adquate line num
@@ -331,7 +330,7 @@ class QuizPage(Page):
         return selectedItems  # returns it to be used
 
 
-    def ListeningIfCorrect(self, clicked_button):
+    def ListeningIfCorrect(self, clicked_button): #finds the correct answer
         self.correct = False
         global score
         global QUESTION_COUNT
@@ -393,7 +392,7 @@ class ManagerPage(Page): #manager page where the manager can see where the users
         self.Label = customtkinter.CTkLabel(self.tree_frame, text="Users who need assistance", font=('inter', 20))
         self.Label.pack(padx = 10, pady = 10)
 
-        self.tree = ttk.Treeview(self.tree_frame, columns=("Username", "LastScore", "AverageScore"), show="headings")
+        self.tree = ttk.Treeview(self.tree_frame, columns=("Username", "LastScore", "AverageScore"), show="headings") #defining the table
         self.tree.heading("Username", text="Username")
         self.tree.heading("LastScore", text="Last Score")
         self.tree.heading("AverageScore", text="Average Score")
@@ -407,7 +406,7 @@ class ManagerPage(Page): #manager page where the manager can see where the users
         self.tree.pack(padx = 20, pady = 20,  fill='both', expand=True)
         self.load_user_data()
 
-    def load_user_data(self):
+    def load_user_data(self): #This generates the colums within the table
         for i, row in self.df.iterrows():
             if  row['AverageScore'] <17 or row['PreviousScore'] ==0:
                 username = row['Username']
