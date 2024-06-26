@@ -89,7 +89,7 @@ class LoginPage(Page):
         self.SignUpLabel.pack(padx=10, pady=1)
    
     def CheckPW(self):    
-        df = pd.read_csv('user_data.csv') #Attempt to open the CSV file
+        df = pd.read_csv('user_data/user_data.csv') #Attempt to open the CSV file
 
         Username = self.UsernameTextbox.get()  #Get the input
         UserRow = df[df['Username'] == Username]  #Find the row with the username in it
@@ -140,7 +140,7 @@ class RegisterPage(Page): #registration page, shown through button on login page
 
         
     def RetrieveUserData(self):  
-        with open('user_data.csv', 'r', newline='') as file:
+        with open('user_data/user_data.csv', 'r', newline='') as file:
             if self.NameTextbox.get() in file:
                 file.readlines()
                 self.NoticeLabel.configure(text='Username already taken, try again')
@@ -154,7 +154,7 @@ class RegisterPage(Page): #registration page, shown through button on login page
             self.password = self.PasswordTextBox.get().encode('utf-8')  # Encode the password to bytes
             self.hashed_password = bcrypt.hashpw(self.password, bcrypt.gensalt())  #encryption through the bcrypt API
 
-            with open('user_data.csv', 'a', newline='') as UserDataFile: 
+            with open('user_data/user_data.csv', 'a', newline='') as UserDataFile: 
                 writer = csv.writer(UserDataFile)
                 UserDataFile.seek(0, 2) #this moves the file pointer to the end of the file
                 if UserDataFile.tell() == 0: #checks if the file is empty
@@ -215,7 +215,7 @@ class HomePage(Page):
         global score
         global QUESTION_COUNT
         QUESTION_COUNT = 0
-        with open('scores.txt', 'r') as file:
+        with open('user_data/scores.txt', 'r') as file:
             lines = file.readlines()   
         #Ensure the requested line number exists in the file
         if line_number - 1 < len(lines):
@@ -233,7 +233,7 @@ class HomePage(Page):
         return int(average)
         
     def UpdateUserAverageScore(self, username, average): #reads the csv file, locates the username and Averagescore col and records it
-        df = pd.read_csv('user_data.csv')
+        df = pd.read_csv('user_data/user_data.csv')
         df.loc[df['Username'] == username, 'AverageScore'] = int(average)
         df.loc[df['Username'] == username, 'PreviousScore'] = int(SCORE)
         df.to_csv('user_data.csv', index=False)
@@ -254,7 +254,7 @@ class SuccessPage(HomePage):
                                                     height=50,
                                                     text='Okay',
                                                     font=('inter', 20),
-                                                    command=lambda: self.append_to_specific_line('scores.txt', TEMPDATA[0], str(f'{score},')))
+                                                    command=lambda: self.append_to_specific_line('user_data/scores.txt', TEMPDATA[0], str(f'{score},')))
 
         self.ShowScore = customtkinter.CTkLabel(master=self.MainFrame,
                                                 text=(f'Your score is:'),
@@ -380,7 +380,7 @@ class AdmimHomePage(HomePage): #child of homepage, only 1 extra button
 class ManagerPage(Page): #manager page where the manager can see where the users got items wrong
     def __init__(self, master=None, use_frame=False):
         super().__init__(master, use_frame)
-        self.df = pd.read_csv('user_data.csv')
+        self.df = pd.read_csv('user_data/user_data.csv')
 
         self.adminframe = customtkinter.CTkFrame(self.app)
 
