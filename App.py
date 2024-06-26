@@ -99,7 +99,7 @@ class LoginPage(Page):
 
             if bcrypt.checkpw(InputPassword, HashedPassword):  #Decrypt the hashing and then find out what it is so we can check it against the criteria
                 TEMPDATASTR.append(Username)
-                with open('user_data.csv', 'r') as readingfile:  #This loops through the usernames
+                with open('user_data/user_data.csv', 'r') as readingfile:  #This loops through the usernames
                     reader = csv.DictReader(readingfile)
                     for index, row in enumerate(reader):  #Enumerate keeps track of the index and the actual value, in this case string.
                         if row['Username'] == Username:
