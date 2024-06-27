@@ -37,7 +37,11 @@ If you would like to download my application you can downlaod the zip file. You 
 
 2. Once the file is unzipped, make sure everything is there and you can run this in your terminal, only if python is isntalled. 
 
-3. You can run the file through the pyhton IDE, navagate to it using the spoltight search on windows of mac. Once it open go to file > open > {filename}. Then in your IDE editor, click run > Runmodule or F5.
+3. Install the required dependencies within terminal (neccecary)
+    ```bash
+    pip install customtkinter pillow pandas bcrypt
+
+2. You can run the file through the pyhton IDE, navagate to it using the spoltight search on windows of mac. Once it open go to file > open > {filename}. Then in your IDE editor, click run > Runmodule or F5.
 
 
 Now you should be within the app, enjoy. 
